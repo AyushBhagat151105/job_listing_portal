@@ -1,7 +1,9 @@
 import { OpenAPIRegistry, OpenApiGeneratorV3 } from "@asteasolutions/zod-to-openapi";
 import { config } from ".";
+import { registerCustomRoutes } from "./openapi-routes";
 
 export const registry = new OpenAPIRegistry();
+registerCustomRoutes(registry);
 
 const apiDescription = `
 Job Listing Portal API — connects job seekers with employers.
@@ -56,6 +58,10 @@ export const generateMergedOpenAPIDocument = (authSchema: any) => {
         },
         tags: [
             ...(apiDoc.tags || []),
+            { name: "Profile", description: "Job Seeker & Employer profile management" },
+            { name: "Jobs", description: "Job listings — search, create, update, delete" },
+            { name: "Applications", description: "Job applications — apply, track & manage" },
+            { name: "Dashboard", description: "Dashboard stats for seekers & employers" },
             { name: "Auth", description: "Sign-up, sign-in, sessions & account management" },
             { name: "Admin", description: "User administration — roles, bans & impersonation" },
             { name: "JWT", description: "JSON Web Key Sets & token management" },
@@ -70,7 +76,7 @@ export const generateMergedOpenAPIDocument = (authSchema: any) => {
     };
 
     merged["x-tagGroups"] = [
-        { name: "API Routes", tags: (apiDoc.tags || []).map((t: any) => t.name) },
+        { name: "API Routes", tags: ["Profile", "Jobs", "Applications", "Dashboard"] },
         { name: "Authentication", tags: ["Auth", "Admin", "JWT"] },
     ];
 

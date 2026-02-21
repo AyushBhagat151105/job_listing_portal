@@ -1,7 +1,7 @@
 export class ApiError extends Error {
   statusCode: number;
   errors: string[];
-  constructor(statusCode = 500, message = "", errors = [], stack = "") {
+  constructor(statusCode = 500, message = "", errors: string[] = [], stack = "") {
     super(message);
     this.statusCode = statusCode;
     this.message = message;

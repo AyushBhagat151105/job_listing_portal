@@ -6,6 +6,10 @@ import { generateMergedOpenAPIDocument } from "./config/openapi";
 import { apiReference } from "@scalar/express-api-reference";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
+import profileRoutes from "./routes/profile.routes";
+import jobRoutes from "./routes/job.routes";
+import applicationRoutes from "./routes/application.routes";
+import dashboardRoutes from "./routes/dashboard.routes";
 
 const app = express();
 const port = config.PORT;
@@ -47,6 +51,11 @@ app.use(
         theme: "deepSpace",
     })
 );
+
+app.use("/api/v1/profile", profileRoutes);
+app.use("/api/v1/jobs", jobRoutes);
+app.use("/api/v1/applications", applicationRoutes);
+app.use("/api/v1/dashboard", dashboardRoutes);
 
 app.use(errorHandler);
 

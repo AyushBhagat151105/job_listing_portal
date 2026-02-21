@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -12,6 +6,8 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// ─── Better Auth Models ─────────────────────────────────────
 
 model User {
   id            String    @id
@@ -28,6 +24,10 @@ model User {
   banned     Boolean?  @default(false)
   banReason  String?
   banExpires DateTime?
+
+  jobSeekerProfile JobSeekerProfile?
+  employerProfile  EmployerProfile?
+  applications     JobApplication[]
 
   @@unique([email])
   @@map("user")
@@ -91,4 +91,94 @@ model Jwks {
   expiresAt  DateTime?
 
   @@map("jwks")
+}
+
+// ─── Job Listing Portal Models ──────────────────────────────
+
+model JobSeekerProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  headline  String?
+  summary   String?
+  phone     String?
+  location  String?
+  resumeUrl String?
+  skills    String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("job_seeker_profile")
+}
+
+model EmployerProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  companyName String
+  companyLogo String?
+  industry    String?
+  website     String?
+  description String?
+  location    String?
+  phone       String?
+
+  jobListings JobListing[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("employer_profile")
+}
+
+model JobListing {
+  id                String          @id @default(cuid())
+  employerProfileId String
+  employerProfile   EmployerProfile @relation(fields: [employerProfileId], references: [id], onDelete: Cascade)
+
+  title            String
+  description      String
+  qualifications   String?
+  responsibilities String?
+  location         String
+  jobType          String
+  salaryMin        Int?
+  salaryMax        Int?
+  status           String  @default("ACTIVE")
+
+  applications JobApplication[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([employerProfileId])
+  @@index([jobType])
+  @@index([location])
+  @@index([status])
+  @@map("job_listing")
+}
+
+model JobApplication {
+  id           String     @id @default(cuid())
+  jobListingId String
+  jobListing   JobListing @relation(fields: [jobListingId], references: [id], onDelete: Cascade)
+
+  applicantId String
+  applicant   User   @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  coverLetter String?
+  resumeUrl   String?
+  status      String  @default("PENDING")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([jobListingId, applicantId])
+  @@index([jobListingId])
+  @@index([applicantId])
+  @@index([status])
+  @@map("job_application")
 }
