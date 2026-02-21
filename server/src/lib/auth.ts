@@ -4,12 +4,38 @@ import { prisma } from "./prisma";
 import { jwt, openAPI, admin } from "better-auth/plugins";
 import { ac, jobSeeker, employer, admin as adminRole } from "./permissions";
 
+const ALLOWED_SIGNUP_ROLES = ["job_seeker", "employer"] as const;
+
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql"
     }),
     emailAndPassword: {
         enabled: true
+    },
+    user: {
+        additionalFields: {
+            role: {
+                type: "string",
+                defaultValue: "job_seeker",
+                input: true,
+            },
+        },
+    },
+    databaseHooks: {
+        user: {
+            create: {
+                before: async (user) => {
+                    const role = (user.role as string) || "job_seeker";
+                    if (!ALLOWED_SIGNUP_ROLES.includes(role as any)) {
+                        return {
+                            data: { ...user, role: "job_seeker" },
+                        };
+                    }
+                    return { data: { ...user, role } };
+                },
+            },
+        },
     },
     plugins: [
         jwt(),

@@ -3,32 +3,76 @@ import { config } from ".";
 
 export const registry = new OpenAPIRegistry();
 
-
 const apiDescription = `
-Advantage Gen API - Backend for wardrobe management with real-time sync support.
+Job Listing Portal API — connects job seekers with employers.
 
 **Authentication**: All endpoints require Better-auth JWT in Authorization header.
 `;
-export const generateOpenAPIDocument = () => {
 
+export const generateOpenAPIDocument = () => {
     const doc = new OpenApiGeneratorV3(registry.definitions).generateDocument({
         openapi: "3.0.3",
         info: {
-            title: "Advantage Gen API",
+            title: "Job Listing Portal API",
             version: "1.0.0",
             description: apiDescription,
         },
         servers: [{ url: `http://localhost:${config.PORT}` }],
-        tags: [
-
-        ],
+        tags: [],
     });
 
-    (doc as unknown as Record<string, unknown>)["x-tagGroups"] = [
-        {
-            name: "API Routes",
+    return doc;
+};
+
+export const generateMergedOpenAPIDocument = (authSchema: any) => {
+    const apiDoc = generateOpenAPIDocument() as any;
+
+    const JWT_PATHS = ["/jwks", "/token", "/refresh-token", "/get-access-token"];
+
+    const getTag = (path: string) => {
+        if (path.startsWith("/admin")) return "Admin";
+        if (JWT_PATHS.some((p) => path === p)) return "JWT";
+        return "Auth";
+    };
+
+    const authPaths: Record<string, any> = {};
+    if (authSchema.paths) {
+        for (const [path, methods] of Object.entries(authSchema.paths)) {
+            const prefixedPath = `/api/auth${path}`;
+            const tag = getTag(path);
+            const taggedMethods: Record<string, any> = {};
+            for (const [method, conf] of Object.entries(methods as any)) {
+                taggedMethods[method] = { ...(conf as any), tags: [tag] };
+            }
+            authPaths[prefixedPath] = taggedMethods;
+        }
+    }
+
+    const merged = {
+        ...apiDoc,
+        paths: {
+            ...(apiDoc.paths || {}),
+            ...authPaths,
         },
+        tags: [
+            ...(apiDoc.tags || []),
+            { name: "Auth", description: "Sign-up, sign-in, sessions & account management" },
+            { name: "Admin", description: "User administration — roles, bans & impersonation" },
+            { name: "JWT", description: "JSON Web Key Sets & token management" },
+        ],
+        components: {
+            ...(apiDoc.components || {}),
+            schemas: {
+                ...(apiDoc.components?.schemas || {}),
+                ...(authSchema.components?.schemas || {}),
+            },
+        },
+    };
+
+    merged["x-tagGroups"] = [
+        { name: "API Routes", tags: (apiDoc.tags || []).map((t: any) => t.name) },
+        { name: "Authentication", tags: ["Auth", "Admin", "JWT"] },
     ];
 
-    return doc;
+    return merged;
 };
