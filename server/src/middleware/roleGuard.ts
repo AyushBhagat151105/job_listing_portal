@@ -9,8 +9,8 @@ import { ApiError } from "../utils/apiError";
  */
 export const requireRole = (...roles: string[]) => {
     return (req: Request, _res: Response, next: NextFunction) => {
-        const session = (req as AuthenticatedRequest).session;
-        const userRole = session.user.role ?? "job_seeker";
+        const user = (req as AuthenticatedRequest).user;
+        const userRole = user?.role ?? "job_seeker";
 
         if (!roles.includes(userRole)) {
             return next(

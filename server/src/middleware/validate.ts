@@ -4,6 +4,18 @@ import { ApiError } from "../utils/apiError";
 
 type ValidationTarget = "body" | "params" | "query";
 
+import type { AuthenticatedRequest } from "./auth";
+
+export type ValidatedRequest<
+    TBody extends z.ZodType = z.ZodTypeAny,
+    TQuery extends z.ZodType = z.ZodTypeAny,
+    TParams extends z.ZodType = z.ZodTypeAny
+> = AuthenticatedRequest & {
+    body: z.infer<TBody>;
+    query: z.infer<TQuery>;
+    params: z.infer<TParams>;
+};
+
 export const validate = (
     schema: z.ZodType,
     target: ValidationTarget = "body"
@@ -24,4 +36,3 @@ export const validate = (
         next();
     };
 };
-

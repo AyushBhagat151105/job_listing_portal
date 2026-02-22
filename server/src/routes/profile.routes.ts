@@ -8,6 +8,14 @@ import {
     createEmployerProfileSchema,
     updateEmployerProfileSchema,
 } from "../validators/schemas";
+import {
+    getJobSeekerProfile,
+    createJobSeekerProfile,
+    updateJobSeekerProfile,
+    getEmployerProfile,
+    createEmployerProfile,
+    updateEmployerProfile
+} from "../controller/profile.controller";
 
 const router = Router();
 
@@ -17,8 +25,7 @@ router.get(
     "/job-seeker",
     authMiddleware,
     requireRole("job_seeker"),
-    // TODO: controller
-    (_req, res) => res.json({ message: "GET job seeker profile" })
+    getJobSeekerProfile
 );
 
 router.post(
@@ -26,7 +33,7 @@ router.post(
     authMiddleware,
     requireRole("job_seeker"),
     validate(createJobSeekerProfileSchema),
-    (_req, res) => res.json({ message: "CREATE job seeker profile" })
+    createJobSeekerProfile
 );
 
 router.put(
@@ -34,7 +41,7 @@ router.put(
     authMiddleware,
     requireRole("job_seeker"),
     validate(updateJobSeekerProfileSchema),
-    (_req, res) => res.json({ message: "UPDATE job seeker profile" })
+    updateJobSeekerProfile
 );
 
 // ─── Employer ───────────────────────────────────────────────
@@ -43,7 +50,7 @@ router.get(
     "/employer",
     authMiddleware,
     requireRole("employer"),
-    (_req, res) => res.json({ message: "GET employer profile" })
+    getEmployerProfile
 );
 
 router.post(
@@ -51,7 +58,7 @@ router.post(
     authMiddleware,
     requireRole("employer"),
     validate(createEmployerProfileSchema),
-    (_req, res) => res.json({ message: "CREATE employer profile" })
+    createEmployerProfile
 );
 
 router.put(
@@ -59,7 +66,7 @@ router.put(
     authMiddleware,
     requireRole("employer"),
     validate(updateEmployerProfileSchema),
-    (_req, res) => res.json({ message: "UPDATE employer profile" })
+    updateEmployerProfile
 );
 
 export default router;

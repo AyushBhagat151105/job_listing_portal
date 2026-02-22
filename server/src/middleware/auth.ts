@@ -3,10 +3,11 @@ import { auth } from "../lib/auth";
 import { fromNodeHeaders } from "better-auth/node";
 import { ApiError } from "../utils/apiError";
 
-type Session = typeof auth.$Infer.Session;
+type SessionData = typeof auth.$Infer.Session;
 
 export interface AuthenticatedRequest extends Request {
-    session: Session;
+    session: SessionData["session"];
+    user: SessionData["user"];
 }
 
 export const authMiddleware = async (
@@ -23,7 +24,8 @@ export const authMiddleware = async (
             throw new ApiError(401, "Unauthorized: No valid session found");
         }
 
-        (req as AuthenticatedRequest).session = session;
+        (req as AuthenticatedRequest).session = session.session;
+        (req as AuthenticatedRequest).user = session.user;
         next();
     } catch (error) {
         if (error instanceof ApiError) {
