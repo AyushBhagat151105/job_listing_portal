@@ -6,6 +6,22 @@ import { ac, jobSeeker, employer, admin as adminRole } from "./permissions";
 
 const ALLOWED_SIGNUP_ROLES = ["job_seeker", "employer"] as const;
 
+const adminPlugin = admin({
+    defaultRole: "job_seeker",
+    ac,
+    roles: {
+        job_seeker: jobSeeker,
+        employer: employer,
+        admin: adminRole,
+    },
+});
+// The admin plugin restricts the 'role' field by default, meaning users can't set it during signup.
+// We override the schema here, bypassing the ROLE_IS_NOT_ALLOWED_TO_BE_SET error.
+if (adminPlugin.schema && adminPlugin.schema.user && adminPlugin.schema.user.fields && adminPlugin.schema.user.fields.role) {
+    // @ts-expect-error - 'input' is typed strictly as 'false', but we want to allow it
+    adminPlugin.schema.user.fields.role.input = true;
+}
+
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql"
@@ -40,14 +56,6 @@ export const auth = betterAuth({
     plugins: [
         jwt(),
         openAPI(),
-        admin({
-            defaultRole: "job_seeker",
-            ac,
-            roles: {
-                job_seeker: jobSeeker,
-                employer: employer,
-                admin: adminRole,
-            },
-        }),
+        adminPlugin,
     ]
 })
