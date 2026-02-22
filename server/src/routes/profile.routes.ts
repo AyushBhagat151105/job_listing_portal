@@ -7,6 +7,7 @@ import {
     updateJobSeekerProfileSchema,
     createEmployerProfileSchema,
     updateEmployerProfileSchema,
+    idParamSchema,
 } from "../validators/schemas";
 import {
     getJobSeekerProfile,
@@ -14,7 +15,10 @@ import {
     updateJobSeekerProfile,
     getEmployerProfile,
     createEmployerProfile,
-    updateEmployerProfile
+    updateEmployerProfile,
+    getApplicantProfile,
+    getCompanyProfile,
+    getCompanyJobs
 } from "../controller/profile.controller";
 
 const router = Router();
@@ -67,6 +71,33 @@ router.put(
     requireRole("employer"),
     validate(updateEmployerProfileSchema),
     updateEmployerProfile
+);
+
+// ─── Public / Cross-Role Viewing ────────────────────────────
+
+// Get an applicant's public profile (employers viewing applicants)
+router.get(
+    "/applicant/:id",
+    authMiddleware,
+    requireRole("employer"), // Only employers need to view applicants
+    validate(idParamSchema, "params"),
+    getApplicantProfile
+);
+
+// Get a company's public profile (anyone authenticated)
+router.get(
+    "/company/:id",
+    authMiddleware,
+    validate(idParamSchema, "params"),
+    getCompanyProfile
+);
+
+// Get a company's job listings (anyone authenticated)
+router.get(
+    "/company/:id/jobs",
+    authMiddleware,
+    validate(idParamSchema, "params"),
+    getCompanyJobs
 );
 
 export default router;

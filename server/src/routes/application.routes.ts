@@ -9,6 +9,13 @@ import {
     jobIdParamSchema,
 } from "../validators/schemas";
 
+import {
+    applyForJob,
+    getMyApplications,
+    getJobApplications,
+    updateApplicationStatus
+} from "../controller/application.controller";
+
 const router = Router();
 
 router.post(
@@ -16,14 +23,14 @@ router.post(
     authMiddleware,
     requireRole("job_seeker"),
     validate(createApplicationSchema),
-    (_req, res) => res.json({ message: "APPLY to job" })
+    applyForJob
 );
 
 router.get(
     "/my",
     authMiddleware,
     requireRole("job_seeker"),
-    (_req, res) => res.json({ message: "LIST my applications" })
+    getMyApplications
 );
 
 router.get(
@@ -31,7 +38,7 @@ router.get(
     authMiddleware,
     requireRole("employer"),
     validate(jobIdParamSchema, "params"),
-    (_req, res) => res.json({ message: "LIST applications for job" })
+    getJobApplications
 );
 
 router.patch(
@@ -40,7 +47,7 @@ router.patch(
     requireRole("employer"),
     validate(idParamSchema, "params"),
     validate(updateApplicationStatusSchema),
-    (_req, res) => res.json({ message: "UPDATE application status" })
+    updateApplicationStatus
 );
 
 export default router;

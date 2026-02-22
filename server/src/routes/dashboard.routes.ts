@@ -2,20 +2,25 @@ import { Router } from "express";
 import { authMiddleware } from "../middleware/auth";
 import { requireRole } from "../middleware/roleGuard";
 
+import {
+    getSeekerDashboardStats,
+    getEmployerDashboardStats
+} from "../controller/dashboard.controller";
+
 const router = Router();
 
 router.get(
     "/seeker",
     authMiddleware,
     requireRole("job_seeker"),
-    (_req, res) => res.json({ message: "SEEKER dashboard stats" })
+    getSeekerDashboardStats
 );
 
 router.get(
     "/employer",
     authMiddleware,
     requireRole("employer"),
-    (_req, res) => res.json({ message: "EMPLOYER dashboard stats" })
+    getEmployerDashboardStats
 );
 
 export default router;

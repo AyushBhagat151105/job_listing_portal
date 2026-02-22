@@ -8,19 +8,26 @@ import {
     idParamSchema,
     jobSearchQuerySchema,
 } from "../validators/schemas";
+import {
+    listJobs,
+    getJobDetails,
+    createJobListing,
+    updateJobListing,
+    deleteJobListing
+} from "../controller/job.controller";
 
 const router = Router();
 
 router.get(
     "/",
     validate(jobSearchQuerySchema, "query"),
-    (_req, res) => res.json({ message: "LIST jobs" })
+    listJobs
 );
 
 router.get(
     "/:id",
     validate(idParamSchema, "params"),
-    (_req, res) => res.json({ message: "GET job details" })
+    getJobDetails
 );
 
 router.post(
@@ -28,7 +35,7 @@ router.post(
     authMiddleware,
     requireRole("employer"),
     validate(createJobListingSchema),
-    (_req, res) => res.json({ message: "CREATE job listing" })
+    createJobListing
 );
 
 router.put(
@@ -37,7 +44,7 @@ router.put(
     requireRole("employer"),
     validate(idParamSchema, "params"),
     validate(updateJobListingSchema),
-    (_req, res) => res.json({ message: "UPDATE job listing" })
+    updateJobListing
 );
 
 router.delete(
@@ -45,7 +52,7 @@ router.delete(
     authMiddleware,
     requireRole("employer", "admin"),
     validate(idParamSchema, "params"),
-    (_req, res) => res.json({ message: "DELETE job listing" })
+    deleteJobListing
 );
 
 export default router;

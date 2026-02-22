@@ -2,6 +2,7 @@ import type { Response } from "express";
 import type { AuthenticatedRequest } from "../middleware/auth";
 import { asyncHandler } from "../utils/asyncHandler";
 import { prisma } from "../lib/prisma";
+import type { Prisma } from "../generated/prisma/client";
 import { ApiError } from "../utils/apiError";
 import { ApiResponse } from "../utils/apiRespons";
 import type { z } from "zod/v4";
@@ -143,3 +144,71 @@ export const updateEmployerProfile = asyncHandler(async (req: ValidatedRequest<t
 
     return res.status(200).json(new ApiResponse(200, "Profile updated successfully", profile))
 })
+
+// ─── Public / Cross-Role Viewing ────────────────────────────
+
+export const getApplicantProfile = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const id = req.params.id as string;
+
+    const profile = await prisma.jobSeekerProfile.findUnique({
+        where: { userId: id },
+        include: {
+            user: {
+                select: {
+                    name: true,
+                    email: true,
+                    image: true
+                }
+            }
+        }
+    });
+
+    if (!profile) {
+        throw new ApiError(404, "Applicant profile not found");
+    }
+
+    return res.status(200).json(new ApiResponse(200, "Applicant profile retrieved", profile));
+});
+
+export const getCompanyProfile = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const id = req.params.id as string;
+
+    const profile = await prisma.employerProfile.findUnique({
+        where: { id },
+        include: {
+            user: {
+                select: {
+                    name: true,
+                    image: true
+                }
+            }
+        }
+    });
+
+    if (!profile) {
+        throw new ApiError(404, "Company not found");
+    }
+
+    return res.status(200).json(new ApiResponse(200, "Company profile retrieved", profile));
+});
+
+export const getCompanyJobs = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const id = req.params.id as string; // EmployerProfile ID
+    const status = req.query.status as string | undefined;
+
+    const where: Prisma.JobListingWhereInput = { employerProfileId: id };
+
+    // If a job seeker is viewing, they should only see ACTIVE jobs
+    if (req.user.role === 'job_seeker') {
+        where.status = 'ACTIVE';
+    } else if (status) {
+        where.status = status;
+    }
+
+    const jobs = await prisma.jobListing.findMany({
+        where,
+        orderBy: { createdAt: 'desc' }
+    });
+
+    return res.status(200).json(new ApiResponse(200, "Company jobs retrieved", jobs));
+});

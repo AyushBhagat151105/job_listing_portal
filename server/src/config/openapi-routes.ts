@@ -144,6 +144,44 @@ export const registerCustomRoutes = (registry: OpenAPIRegistry) => {
         },
     });
 
+    registry.registerPath({
+        method: "get",
+        path: "/api/v1/profile/applicant/{id}",
+        tags: ["Profile"],
+        summary: "Get applicant profile details (Employer)",
+        security: [{ bearerAuth: [] }],
+        request: { params: IdParam },
+        responses: {
+            200: { description: "Applicant profile", content: { "application/json": { schema: JobSeekerProfileBody } } },
+            404: { description: "Applicant not found", content: { "application/json": { schema: ErrorResponse } } },
+        },
+    });
+
+    registry.registerPath({
+        method: "get",
+        path: "/api/v1/profile/company/{id}",
+        tags: ["Profile"],
+        summary: "Get company profile details",
+        security: [{ bearerAuth: [] }],
+        request: { params: IdParam },
+        responses: {
+            200: { description: "Company profile", content: { "application/json": { schema: EmployerProfileBody } } },
+            404: { description: "Company not found", content: { "application/json": { schema: ErrorResponse } } },
+        },
+    });
+
+    registry.registerPath({
+        method: "get",
+        path: "/api/v1/profile/company/{id}/jobs",
+        tags: ["Profile"],
+        summary: "Get jobs posted by a company",
+        security: [{ bearerAuth: [] }],
+        request: { params: IdParam },
+        responses: {
+            200: { description: "Company jobs", content: { "application/json": { schema: z.object({ data: z.array(JobListingBody) }) } } },
+        },
+    });
+
     // ─── Job Listing Routes ─────────────────────────────────────
 
     registry.registerPath({
