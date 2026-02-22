@@ -150,7 +150,63 @@ export const getJobApplications = asyncHandler(async (req: ValidatedRequest<z.Zo
         orderBy: { createdAt: 'desc' }
     });
 
-    return res.status(200).json(new ApiResponse(200, "Applications retrieved successfully", applications));
+    // --- Applicant Matching Algorithm ---
+    // Combine job text for checking keyword matches
+    const jobText = `${job.title} ${job.description} ${job.qualifications || ''} ${job.responsibilities || ''}`.toLowerCase();
+    const jobLocation = job.location.toLowerCase();
+
+    // Simple tokenizer for job title keywords
+    const titleKeywords = job.title.toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length > 2);
+
+    const scoredApplications = applications.map(app => {
+        let matchScore = 0;
+        const matchDetails: string[] = [];
+
+        const profile = app.applicant.jobSeekerProfile;
+
+        if (profile) {
+            // 1. Location Match (+20 pts)
+            if (profile.location && profile.location.toLowerCase().includes(jobLocation)) {
+                matchScore += 20;
+                matchDetails.push("Location matches exactly");
+            } else if (profile.location) {
+                // Partial location logic (e.g. they live in identical state/country) could be added here
+                matchDetails.push("Location differs");
+            }
+
+            // 2. Headline Match (+10 pts)
+            if (profile.headline) {
+                const headlineLower = profile.headline.toLowerCase();
+                const matchedKeywords = titleKeywords.filter(kw => headlineLower.includes(kw));
+
+                if (matchedKeywords.length > 0) {
+                    matchScore += 10;
+                    matchDetails.push(`Headline matches role (${matchedKeywords.join(", ")})`);
+                }
+            }
+
+            // 3. Skills Match (+10 pts per skill found in the job text)
+            if (profile.skills && profile.skills.length > 0) {
+                const matchedSkills = profile.skills.filter(s => jobText.includes(s.toLowerCase()));
+                if (matchedSkills.length > 0) {
+                    const skillPoints = matchedSkills.length * 10;
+                    matchScore += skillPoints;
+                    matchDetails.push(`Matches ${matchedSkills.length} skills (+${skillPoints} pts)`);
+                }
+            }
+        }
+
+        return {
+            ...app,
+            matchScore,
+            matchDetails
+        };
+    });
+
+    // Sort applicants by their score descending
+    scoredApplications.sort((a, b) => b.matchScore - a.matchScore);
+
+    return res.status(200).json(new ApiResponse(200, "Applications retrieved and scored successfully", scoredApplications));
 });
 
 // ─── Employer: Update Application Status ────────────────────

@@ -53,6 +53,8 @@ export const registerCustomRoutes = (registry: OpenAPIRegistry) => {
             jobListingId: z.string().min(1).openapi({ example: "cm1abc123def456" }),
             coverLetter: z.string().max(3000).optional().openapi({ example: "I am excited to apply for this role..." }),
             resumeUrl: z.string().url().optional().openapi({ example: "https://example.com/resume.pdf" }),
+            matchScore: z.number().optional().openapi({ example: 40 }),
+            matchDetails: z.array(z.string()).optional().openapi({ example: ["Location matches exactly", "Matches 2 skills (+20 pts)"] }),
         })
     );
 
