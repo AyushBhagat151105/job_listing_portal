@@ -18,4 +18,4 @@ COPY --from=builder /app/prisma ./prisma
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "bunx prisma db push && bunx prisma generate && bun run start:prod"]
+CMD ["bun", "run", "start:prod"]
