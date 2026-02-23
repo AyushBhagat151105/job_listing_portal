@@ -19,7 +19,11 @@ export const generateOpenAPIDocument = () => {
             version: "1.0.0",
             description: apiDescription,
         },
-        servers: [{ url: `http://localhost:${config.PORT}` }],
+        servers: [
+            {
+                url: process.env.API_URL || process.env.BETTER_AUTH_URL || `http://localhost:${config.PORT}`
+            }
+        ],
         tags: [],
     });
 
