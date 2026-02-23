@@ -10,6 +10,7 @@ import profileRoutes from "./routes/profile.routes";
 import jobRoutes from "./routes/job.routes";
 import applicationRoutes from "./routes/application.routes";
 import dashboardRoutes from "./routes/dashboard.routes";
+import healthRoutes from "./routes/health.routes";
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/jobs", jobRoutes);
 app.use("/api/v1/applications", applicationRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
+app.use("/api/v1/health", healthRoutes);
 
 // Catch-all 404 for undefined routes before hitting the error handler
 app.use((_req: Request, _res: Response, next) => {

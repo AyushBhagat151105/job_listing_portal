@@ -76,11 +76,11 @@ export const updateApplicationStatusSchema = z.object({
 // ─── Shared Param Schemas ───────────────────────────────────
 
 export const idParamSchema = z.object({
-    id: z.string().min(1),
+    id: z.string().cuid("Invalid ID format"),
 });
 
 export const jobIdParamSchema = z.object({
-    jobId: z.string().min(1),
+    jobId: z.string().cuid("Invalid Job ID format"),
 });
 
 // ─── Search Query Schema ────────────────────────────────────

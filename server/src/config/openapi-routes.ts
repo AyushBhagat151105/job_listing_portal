@@ -374,6 +374,66 @@ export const registerCustomRoutes = (registry: OpenAPIRegistry) => {
         },
     });
 
+    // ─── Health Routes ──────────────────────────────────────────
+
+    registry.registerPath({
+        method: "get",
+        path: "/api/v1/health",
+        tags: ["Health"],
+        summary: "Check system health and database connectivity",
+        responses: {
+            200: {
+                description: "System is healthy",
+                content: {
+                    "application/json": {
+                        schema: z.object({
+                            statusCode: z.number().openapi({ example: 200 }),
+                            message: z.string().openapi({ example: "Up and Running" }),
+                            data: z.object({
+                                status: z.string().openapi({ example: "ok" }),
+                                timestamp: z.string().openapi({ example: "2023-11-01T12:00:00.000Z" }),
+                                process: z.object({
+                                    uptimeSeconds: z.number().openapi({ example: 125.43 }),
+                                    nodeVersion: z.string().openapi({ example: "v18.17.1" }),
+                                    memory: z.object({
+                                        rss: z.string().openapi({ example: "45.2 MB" }),
+                                        heapTotal: z.string().openapi({ example: "25.6 MB" }),
+                                        heapUsed: z.string().openapi({ example: "18.3 MB" }),
+                                        external: z.string().openapi({ example: "2.1 MB" }),
+                                    }),
+                                }),
+                                database: z.object({
+                                    status: z.string().openapi({ example: "ok" }),
+                                    latency: z.number().openapi({ example: 4 }),
+                                }),
+                            }),
+                            success: z.boolean().openapi({ example: true }),
+                        }),
+                    },
+                },
+            },
+            503: {
+                description: "System Service Unavailable",
+                content: {
+                    "application/json": {
+                        schema: z.object({
+                            statusCode: z.number().openapi({ example: 503 }),
+                            message: z.string().openapi({ example: "Health Check - Database Error" }),
+                            data: z.object({
+                                status: z.string().openapi({ example: "error" }),
+                                database: z.object({
+                                    status: z.string().openapi({ example: "down" }),
+                                    latency: z.number().openapi({ example: 0 }),
+                                }),
+                            }),
+                            success: z.boolean().openapi({ example: false }),
+                        }),
+                    },
+                },
+            },
+        },
+    });
+
     // ─── Security Scheme ────────────────────────────────────────
     registry.registerComponent("securitySchemes", "bearerAuth", {
         type: "http",

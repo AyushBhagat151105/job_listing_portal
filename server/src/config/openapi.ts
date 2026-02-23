@@ -65,6 +65,7 @@ export const generateMergedOpenAPIDocument = (authSchema: any) => {
             { name: "Auth", description: "Sign-up, sign-in, sessions & account management" },
             { name: "Admin", description: "User administration — roles, bans & impersonation" },
             { name: "JWT", description: "JSON Web Key Sets & token management" },
+            { name: "Health", description: "System health and status checks" },
         ],
         components: {
             ...(apiDoc.components || {}),
@@ -76,7 +77,7 @@ export const generateMergedOpenAPIDocument = (authSchema: any) => {
     };
 
     merged["x-tagGroups"] = [
-        { name: "API Routes", tags: ["Profile", "Jobs", "Applications", "Dashboard"] },
+        { name: "API Routes", tags: ["Profile", "Jobs", "Applications", "Dashboard", "Health"] },
         { name: "Authentication", tags: ["Auth", "Admin", "JWT"] },
     ];
 

@@ -8,6 +8,10 @@ describe("API Integration - Public Job Endpoint Validation Edges", () => {
         // Technically this might return 200 with 0 items if the DB is empty
         const response = await request(app).get("/api/v1/jobs?page=1&limit=5&jobType=FULL_TIME&salaryMin=50000");
 
+        if (response.status !== 200) {
+            console.log("JOB SEARCH FAILED:", response.body);
+        }
+
         // Assert it passes validation and auth (returns 200 OK)
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("data");
@@ -40,10 +44,8 @@ describe("API Integration - Public Job Endpoint Validation Edges", () => {
         // If it was returning 400 it means Zod caught it.
         const response = await request(app).get("/api/v1/jobs/invalid-id-that-does-not-exist");
 
-        console.log("JOB ID RESPONSE:", response.body);
-
-        expect(response.status).toBe(404);
-        expect(response.body.message).toMatch(/Job listing not found|Route not found/i);
+        expect(response.status).toBe(400);
+        expect(response.body.message).toMatch(/Validation failed|Invalid ID format/i);
     });
 
 });

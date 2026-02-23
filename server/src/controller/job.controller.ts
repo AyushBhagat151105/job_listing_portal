@@ -41,8 +41,8 @@ export const listJobs = asyncHandler(async (req: ValidatedRequest<z.ZodTypeAny, 
         where.status = "ACTIVE";
     }
 
-    if (salaryMin !== undefined) where.salaryMin = { gte: salaryMin };
-    if (salaryMax !== undefined) where.salaryMax = { lte: salaryMax };
+    if (salaryMin !== undefined && !Number.isNaN(salaryMin)) where.salaryMin = { gte: salaryMin };
+    if (salaryMax !== undefined && !Number.isNaN(salaryMax)) where.salaryMax = { lte: salaryMax };
 
     const [jobs, totalCount] = await Promise.all([
         prisma.jobListing.findMany({
