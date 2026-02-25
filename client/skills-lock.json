@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "skills": {
+    "TanStack Form": {
+      "source": "exceptionless/exceptionless",
+      "sourceType": "github",
+      "computedHash": "4f2f3fd8ed9a9c9e1800c22edc655c9415bd57939dbe585139db062ef400f876"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
+    },
+    "shadcn-ui": {
+      "source": "google-labs-code/stitch-skills",
+      "sourceType": "github",
+      "computedHash": "dadbca54d35a33fe73e40018611af2179689305bf6da812ab2643987fefd9da3"
+    },
+    "tanstack-query": {
+      "source": "pproenca/dot-skills",
+      "sourceType": "github",
+      "computedHash": "e7d35b4fa0a3f167de1f465a31e25d7087ee553ab894083716894d61ca1091f9"
+    },
+    "tanstack-router-best-practices": {
+      "source": "deckardger/tanstack-agent-skills",
+      "sourceType": "github",
+      "computedHash": "65764bc7b90e47f6023cb7f89b3af93eaaafc517754f10b9382e184d4646a77d"
+    },
+    "uiux-excellence-guide": {
+      "source": "jpkovas/uiux-excellence-guide",
+      "sourceType": "github",
+      "computedHash": "8a5fea21ce1e11443a5f0dac153178f931760c8babf036c1a481671014f73e8e"
+    }
+  }
+}
