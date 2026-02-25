@@ -24,7 +24,8 @@ if (adminPlugin.schema && adminPlugin.schema.user && adminPlugin.schema.user.fie
 
 export const auth = betterAuth({
     trustHost: process.env.NODE_ENV === 'production',
-    baseURL: process.env.BETTER_AUTH_URL || process.env.RENDER_EXTERNAL_URL,
+    baseURL: process.env.BETTER_AUTH_URL || process.env.RENDER_EXTERNAL_URL || "http://localhost:3000",
+    trustedOrigins: ["http://localhost:3001"],
     database: prismaAdapter(prisma, {
         provider: "postgresql"
     }),

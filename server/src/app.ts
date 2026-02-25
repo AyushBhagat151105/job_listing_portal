@@ -14,16 +14,16 @@ import healthRoutes from "./routes/health.routes";
 
 const app = express();
 
-app.all("/api/auth/*splat", toNodeHandler(auth));
-
 app.use(
     cors({
-        origin: "*",
+        origin: "http://localhost:3001",
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
         allowedHeaders: "Content-Type,Authorization",
         credentials: true,
     })
 );
+
+app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

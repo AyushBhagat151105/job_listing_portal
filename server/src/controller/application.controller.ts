@@ -140,6 +140,7 @@ export const getJobApplications = asyncHandler(async (req: ValidatedRequest<z.Zo
                     email: true,
                     jobSeekerProfile: {
                         select: {
+                            userId: true,
                             headline: true,
                             location: true,
                             skills: true,
