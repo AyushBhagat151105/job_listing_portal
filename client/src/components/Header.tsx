@@ -2,7 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { authClient } from '../lib/auth-client'
 import { useState } from 'react'
 import { Button } from '#/components/ui/button'
-import { Avatar, AvatarFallback } from '#/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +20,9 @@ import {
   X,
   FileText,
   Plus,
+  Settings,
 } from 'lucide-react'
+import { ModeToggle } from './mode-toggle'
 
 export default function Header() {
   const { data: session } = authClient.useSession()
@@ -37,15 +39,15 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-400 flex items-center justify-center group-hover:shadow-lg group-hover:shadow-teal-500/20 transition-shadow">
               <Briefcase size={16} className="text-zinc-900" />
             </div>
-            <span className="text-lg font-bold text-zinc-100 tracking-tight">
-              Job<span className="text-teal-400">Portal</span>
+            <span className="text-lg font-bold text-foreground tracking-tight">
+              Nex<span className="text-teal-400">Hire</span>
             </span>
           </Link>
 
@@ -53,10 +55,10 @@ export default function Header() {
           <nav className="hidden md:flex items-center gap-1">
             <Link
               to="/"
-              className="px-3 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50 transition-colors"
+              className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
               activeProps={{
                 className:
-                  'px-3 py-2 rounded-lg text-sm font-medium text-teal-400 bg-teal-500/10',
+                  'px-3 py-2 rounded-lg text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-500/10',
               }}
             >
               Browse Jobs
@@ -66,30 +68,30 @@ export default function Header() {
               <>
                 <Link
                   to="/jobs/create"
-                  className="px-3 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50 transition-colors"
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                   activeProps={{
                     className:
-                      'px-3 py-2 rounded-lg text-sm font-medium text-teal-400 bg-teal-500/10',
+                      'px-3 py-2 rounded-lg text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-500/10',
                   }}
                 >
                   Post Job
                 </Link>
                 <Link
                   to="/dashboard/jobs"
-                  className="px-3 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50 transition-colors"
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                   activeProps={{
                     className:
-                      'px-3 py-2 rounded-lg text-sm font-medium text-teal-400 bg-teal-500/10',
+                      'px-3 py-2 rounded-lg text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-500/10',
                   }}
                 >
                   Manage Jobs
                 </Link>
                 <Link
                   to="/dashboard/employer"
-                  className="px-3 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50 transition-colors"
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                   activeProps={{
                     className:
-                      'px-3 py-2 rounded-lg text-sm font-medium text-teal-400 bg-teal-500/10',
+                      'px-3 py-2 rounded-lg text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-500/10',
                   }}
                 >
                   Dashboard
@@ -101,20 +103,20 @@ export default function Header() {
               <>
                 <Link
                   to="/applications"
-                  className="px-3 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50 transition-colors"
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                   activeProps={{
                     className:
-                      'px-3 py-2 rounded-lg text-sm font-medium text-teal-400 bg-teal-500/10',
+                      'px-3 py-2 rounded-lg text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-500/10',
                   }}
                 >
                   My Applications
                 </Link>
                 <Link
                   to="/dashboard/seeker"
-                  className="px-3 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50 transition-colors"
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                   activeProps={{
                     className:
-                      'px-3 py-2 rounded-lg text-sm font-medium text-teal-400 bg-teal-500/10',
+                      'px-3 py-2 rounded-lg text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-500/10',
                   }}
                 >
                   Dashboard
@@ -128,33 +130,34 @@ export default function Header() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-zinc-800/50 transition-colors cursor-pointer">
-                    <Avatar className="w-8 h-8 border border-zinc-700">
+                  <button className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-accent transition-colors cursor-pointer">
+                    <Avatar className="w-8 h-8 border border-border">
+                      <AvatarImage src={user?.image || undefined} alt={user.name || 'User'} />
                       <AvatarFallback className="bg-gradient-to-br from-teal-500 to-cyan-500 text-zinc-900 text-xs font-bold">
                         {user.name?.charAt(0)?.toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="hidden sm:block text-sm font-medium text-zinc-300 max-w-[120px] truncate">
+                    <span className="hidden sm:block text-sm font-medium text-foreground max-w-[120px] truncate">
                       {user.name}
                     </span>
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
-                  className="w-56 bg-zinc-900 border-zinc-800"
+                  className="w-56 bg-card border-border"
                 >
-                  <DropdownMenuLabel className="text-zinc-400 font-normal">
+                  <DropdownMenuLabel className="text-muted-foreground font-normal">
                     <div className="flex flex-col gap-1">
-                      <p className="text-sm font-medium text-zinc-200">
+                      <p className="text-sm font-medium text-foreground">
                         {user.name}
                       </p>
-                      <p className="text-xs text-zinc-500">{user.email}</p>
-                      <span className="inline-block mt-1 text-[10px] font-semibold uppercase tracking-wider text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full w-fit">
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                      <span className="inline-block mt-1 text-[10px] font-semibold uppercase tracking-wider text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full w-fit">
                         {role?.replace('_', ' ')}
                       </span>
                     </div>
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-zinc-800" />
+                  <DropdownMenuSeparator className="bg-border" />
 
                   <DropdownMenuItem
                     onClick={() =>
@@ -180,7 +183,7 @@ export default function Header() {
                             : '/dashboard/seeker',
                       })
                     }
-                    className="text-zinc-300 focus:bg-zinc-800 focus:text-zinc-100 cursor-pointer"
+                    className="text-muted-foreground focus:bg-accent focus:text-accent-foreground cursor-pointer"
                   >
                     <LayoutDashboard size={14} className="mr-2" />
                     Dashboard
@@ -216,7 +219,16 @@ export default function Header() {
                     </DropdownMenuItem>
                   )}
 
-                  <DropdownMenuSeparator className="bg-zinc-800" />
+                  <DropdownMenuSeparator className="bg-border" />
+
+                  <DropdownMenuItem
+                    onClick={() => navigate({ to: '/settings' })}
+                    className="text-zinc-300 focus:bg-zinc-800 focus:text-zinc-100 cursor-pointer"
+                  >
+                    <Settings size={14} className="mr-2" />
+                    Settings
+                  </DropdownMenuItem>
+
                   <DropdownMenuItem
                     onClick={handleSignOut}
                     className="text-red-400 focus:bg-red-500/10 focus:text-red-400 cursor-pointer"
@@ -232,7 +244,7 @@ export default function Header() {
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate({ to: '/sign-in' })}
-                  className="text-zinc-400 hover:text-zinc-100 cursor-pointer"
+                  className="text-muted-foreground hover:text-foreground cursor-pointer"
                 >
                   Sign In
                 </Button>
@@ -246,10 +258,12 @@ export default function Header() {
               </div>
             )}
 
+            <ModeToggle />
+
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-lg text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100 transition-colors cursor-pointer"
+              className="md:hidden p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors cursor-pointer"
             >
               {mobileOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -258,7 +272,7 @@ export default function Header() {
 
         {/* Mobile Nav */}
         {mobileOpen && (
-          <div className="md:hidden border-t border-zinc-800/60 bg-zinc-950/95 backdrop-blur-xl">
+          <div className="md:hidden border-t border-border/60 bg-background/95 backdrop-blur-xl">
             <nav className="flex flex-col p-4 gap-1">
               <Link
                 to="/"
@@ -273,21 +287,21 @@ export default function Header() {
                   <Link
                     to="/jobs/create"
                     onClick={() => setMobileOpen(false)}
-                    className="px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
+                    className="px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent"
                   >
                     Post Job
                   </Link>
                   <Link
                     to="/dashboard/jobs"
                     onClick={() => setMobileOpen(false)}
-                    className="px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
+                    className="px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent"
                   >
                     Manage Jobs
                   </Link>
                   <Link
                     to="/dashboard/employer"
                     onClick={() => setMobileOpen(false)}
-                    className="px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
+                    className="px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent"
                   >
                     Dashboard
                   </Link>
@@ -299,14 +313,14 @@ export default function Header() {
                   <Link
                     to="/applications"
                     onClick={() => setMobileOpen(false)}
-                    className="px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
+                    className="px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent"
                   >
                     My Applications
                   </Link>
                   <Link
                     to="/dashboard/seeker"
                     onClick={() => setMobileOpen(false)}
-                    className="px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
+                    className="px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent"
                   >
                     Dashboard
                   </Link>
@@ -322,7 +336,7 @@ export default function Header() {
                       navigate({ to: '/sign-in' })
                       setMobileOpen(false)
                     }}
-                    className="text-zinc-400 hover:text-zinc-100 flex-1 cursor-pointer"
+                    className="text-muted-foreground hover:text-foreground flex-1 cursor-pointer"
                   >
                     Sign In
                   </Button>

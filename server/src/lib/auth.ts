@@ -25,12 +25,18 @@ if (adminPlugin.schema && adminPlugin.schema.user && adminPlugin.schema.user.fie
 export const auth = betterAuth({
     trustHost: process.env.NODE_ENV === 'production',
     baseURL: process.env.BETTER_AUTH_URL || process.env.RENDER_EXTERNAL_URL || "http://localhost:3000",
-    trustedOrigins: ["http://localhost:3001"],
+    trustedOrigins: [process.env.FRONTEND_URL as string],
     database: prismaAdapter(prisma, {
         provider: "postgresql"
     }),
     emailAndPassword: {
         enabled: true
+    },
+    socialProviders: {
+        google: {
+            clientId: process.env.GOOGLE_CLIENT_ID as string,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+        },
     },
     user: {
         additionalFields: {
@@ -44,8 +50,20 @@ export const auth = betterAuth({
     databaseHooks: {
         user: {
             create: {
-                before: async (user) => {
-                    const role = (user.role as string) || "job_seeker";
+                before: async (user, ctx) => {
+                    let role = (user.role as string) || "job_seeker";
+
+                    // Allow overriding role via cookie for OAuth signups
+                    const req = ctx?.request as Request | undefined;
+                    if (req && req.headers) {
+                        const cookie = req.headers.get("cookie");
+                        if (cookie && cookie.includes("signUpRole=employer")) {
+                            role = "employer";
+                        } else if (cookie && cookie.includes("signUpRole=job_seeker")) {
+                            role = "job_seeker";
+                        }
+                    }
+
                     if (!ALLOWED_SIGNUP_ROLES.includes(role as any)) {
                         return {
                             data: { ...user, role: "job_seeker" },

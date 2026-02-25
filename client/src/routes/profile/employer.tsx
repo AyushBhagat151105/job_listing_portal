@@ -106,10 +106,10 @@ function EmployerProfilePage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 w-48 bg-zinc-800 rounded" />
+          <div className="h-8 w-48 bg-muted rounded" />
           <div className="space-y-4">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-10 bg-zinc-800 rounded" />
+              <div key={i} className="h-10 bg-muted rounded" />
             ))}
           </div>
         </div>
@@ -124,14 +124,14 @@ function EmployerProfilePage() {
           <Building2 size={20} className="text-zinc-900" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">Employer Profile</h1>
-          <p className="text-sm text-zinc-400">
+          <h1 className="text-2xl font-bold text-foreground">Employer Profile</h1>
+          <p className="text-sm text-muted-foreground">
             {profile ? 'Update company details' : 'Set up your company profile'}
           </p>
         </div>
       </div>
 
-      <Card className="border-zinc-800/60 bg-zinc-900/60">
+      <Card className="border-border bg-card">
         <CardContent className="p-6">
           <form
             onSubmit={(e) => {
@@ -155,7 +155,7 @@ function EmployerProfilePage() {
             <form.Field name="companyName">
               {(field) => (
                 <div className="space-y-2">
-                  <Label className="text-zinc-300">
+                  <Label className="text-foreground">
                     Company Name <span className="text-red-400">*</span>
                   </Label>
                   <Input
@@ -164,7 +164,7 @@ function EmployerProfilePage() {
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                     maxLength={200}
-                    className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
+                    className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                   />
                   {field.state.meta.errors.length > 0 && (
                     <p className="text-xs text-red-400">{field.state.meta.errors.join(', ')}</p>
@@ -177,14 +177,14 @@ function EmployerProfilePage() {
               <form.Field name="industry">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label className="text-zinc-300">Industry</Label>
+                    <Label className="text-foreground">Industry</Label>
                     <Input
                       placeholder="Technology"
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       maxLength={100}
-                      className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
+                      className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
                 )}
@@ -192,14 +192,14 @@ function EmployerProfilePage() {
               <form.Field name="location">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label className="text-zinc-300">Location</Label>
+                    <Label className="text-foreground">Location</Label>
                     <Input
                       placeholder="Bangalore, India"
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       maxLength={200}
-                      className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
+                      className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
                 )}
@@ -210,13 +210,13 @@ function EmployerProfilePage() {
               <form.Field name="website">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label className="text-zinc-300">Website</Label>
+                    <Label className="text-foreground">Website</Label>
                     <Input
                       placeholder="https://techcorp.in"
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
+                      className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                     />
                     {field.state.meta.errors.length > 0 && (
                       <p className="text-xs text-red-400">{field.state.meta.errors.join(', ')}</p>
@@ -227,14 +227,14 @@ function EmployerProfilePage() {
               <form.Field name="phone">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label className="text-zinc-300">Phone</Label>
+                    <Label className="text-foreground">Phone</Label>
                     <Input
                       placeholder="+91-9876543210"
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       maxLength={20}
-                      className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
+                      className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
                 )}
@@ -244,13 +244,13 @@ function EmployerProfilePage() {
             <form.Field name="companyLogo">
               {(field) => (
                 <div className="space-y-2">
-                  <Label className="text-zinc-300">Company Logo URL</Label>
+                  <Label className="text-foreground">Company Logo URL</Label>
                   <Input
                     placeholder="https://example.com/logo.png"
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
+                    className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                   />
                   {field.state.meta.errors.length > 0 && (
                     <p className="text-xs text-red-400">{field.state.meta.errors.join(', ')}</p>
@@ -262,7 +262,7 @@ function EmployerProfilePage() {
             <form.Field name="description">
               {(field) => (
                 <div className="space-y-2">
-                  <Label className="text-zinc-300">Description</Label>
+                  <Label className="text-foreground">Description</Label>
                   <Textarea
                     placeholder="Tell job seekers about your company..."
                     value={field.state.value}
@@ -270,7 +270,7 @@ function EmployerProfilePage() {
                     onChange={(e) => field.handleChange(e.target.value)}
                     maxLength={2000}
                     rows={4}
-                    className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 resize-none"
+                    className="bg-background border-input text-foreground placeholder:text-muted-foreground resize-none"
                   />
                 </div>
               )}

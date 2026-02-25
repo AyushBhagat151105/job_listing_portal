@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { api } from '../lib/api'
 import type { ApiResponse, PaginatedJobs } from '../lib/api'
+import { timeAgo, formatSalaryRange } from '../lib/utils'
+import { JOB_TYPE_LABELS } from '../lib/constants'
 
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
@@ -35,13 +37,7 @@ import {
 
 export const Route = createFileRoute('/')({ component: HomePage })
 
-const JOB_TYPE_LABELS: Record<string, string> = {
-  FULL_TIME: 'Full Time',
-  PART_TIME: 'Part Time',
-  CONTRACT: 'Contract',
-  INTERNSHIP: 'Internship',
-  REMOTE: 'Remote',
-}
+
 
 const JOB_TYPE_COLORS: Record<string, string> = {
   FULL_TIME: 'bg-teal-500/10 text-teal-400 border-teal-500/30',
@@ -49,23 +45,6 @@ const JOB_TYPE_COLORS: Record<string, string> = {
   CONTRACT: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
   INTERNSHIP: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
   REMOTE: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-}
-
-function formatSalary(amount?: number) {
-  if (!amount) return null
-  if (amount >= 100000) return `₹${(amount / 100000).toFixed(1)}L`
-  if (amount >= 1000) return `₹${(amount / 1000).toFixed(0)}K`
-  return `₹${amount}`
-}
-
-function timeAgo(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const days = Math.floor(diff / 86400000)
-  if (days === 0) return 'Today'
-  if (days === 1) return 'Yesterday'
-  if (days < 7) return `${days}d ago`
-  if (days < 30) return `${Math.floor(days / 7)}w ago`
-  return `${Math.floor(days / 30)}mo ago`
 }
 
 function HomePage() {
@@ -99,7 +78,7 @@ function HomePage() {
     <main>
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-teal-500/8 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-[500px] h-[300px] bg-cyan-500/5 rounded-full blur-3xl" />
 
@@ -117,7 +96,7 @@ function HomePage() {
               </span>
             </h1>
 
-            <p className="text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Browse thousands of opportunities from top companies. Apply with
               one click and track every application in real-time.
             </p>
@@ -130,30 +109,31 @@ function HomePage() {
               <div className="relative flex-1">
                 <Search
                   size={18}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 />
                 <Input
                   placeholder="Job title or keyword..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-12 bg-zinc-800/60 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 focus:border-teal-500"
+                  className="pl-10 h-12 bg-background border-input text-foreground placeholder:text-muted-foreground focus:border-teal-500"
                 />
               </div>
               <div className="relative flex-1 sm:max-w-[200px]">
                 <MapPin
                   size={18}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 />
                 <Input
                   placeholder="Location..."
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="pl-10 h-12 bg-zinc-800/60 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 focus:border-teal-500"
+                  className="pl-10 h-12 bg-background border-input text-foreground placeholder:text-muted-foreground focus:border-teal-500"
                 />
               </div>
               <Button
                 type="submit"
-                className="h-12 px-6 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-zinc-900 font-semibold shadow-lg shadow-teal-500/20 cursor-pointer"
+                variant="outline"
+                className="h-12 px-6 cursor-pointer"
               >
                 <Search size={18} className="mr-2" />
                 Search
@@ -168,7 +148,7 @@ function HomePage() {
         {/* Filters */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-zinc-100">
+            <h2 className="text-xl font-bold text-foreground">
               {data?.pagination?.totalItems !== undefined
                 ? `${data.pagination.totalItems} Jobs`
                 : 'Jobs'}
@@ -186,7 +166,7 @@ function HomePage() {
                   setSubmittedLocation('')
                   setPage(1)
                 }}
-                className="text-zinc-400 hover:text-zinc-100 text-xs cursor-pointer"
+                className="text-muted-foreground hover:text-foreground text-xs cursor-pointer"
               >
                 Clear filters
               </Button>
@@ -200,10 +180,10 @@ function HomePage() {
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[180px] bg-zinc-800/60 border-zinc-700 text-zinc-300">
+            <SelectTrigger className="w-[180px] bg-background border-input text-foreground">
               <SelectValue placeholder="Job Type" />
             </SelectTrigger>
-            <SelectContent className="bg-zinc-900 border-zinc-800">
+            <SelectContent className="bg-popover border-border">
               <SelectItem value="ALL">All Types</SelectItem>
               <SelectItem value="FULL_TIME">Full Time</SelectItem>
               <SelectItem value="PART_TIME">Part Time</SelectItem>
@@ -220,18 +200,18 @@ function HomePage() {
             {Array.from({ length: 6 }).map((_, i) => (
               <Card
                 key={i}
-                className="border-zinc-800/60 bg-zinc-900/60"
+                className="border-border bg-card"
               >
                 <CardHeader className="space-y-3">
-                  <Skeleton className="h-5 w-3/4 bg-zinc-800" />
-                  <Skeleton className="h-4 w-1/2 bg-zinc-800" />
+                  <Skeleton className="h-5 w-3/4 bg-muted" />
+                  <Skeleton className="h-4 w-1/2 bg-muted" />
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Skeleton className="h-4 w-full bg-zinc-800" />
-                  <Skeleton className="h-4 w-2/3 bg-zinc-800" />
+                  <Skeleton className="h-4 w-full bg-muted" />
+                  <Skeleton className="h-4 w-2/3 bg-muted" />
                   <div className="flex gap-2">
-                    <Skeleton className="h-6 w-20 bg-zinc-800 rounded-full" />
-                    <Skeleton className="h-6 w-24 bg-zinc-800 rounded-full" />
+                    <Skeleton className="h-6 w-20 bg-muted rounded-full" />
+                    <Skeleton className="h-6 w-24 bg-muted rounded-full" />
                   </div>
                 </CardContent>
               </Card>
@@ -239,13 +219,13 @@ function HomePage() {
           </div>
         ) : data?.jobs?.length === 0 ? (
           <div className="text-center py-20">
-            <div className="w-16 h-16 rounded-2xl bg-zinc-800/50 flex items-center justify-center mx-auto mb-4">
-              <Briefcase size={32} className="text-zinc-600" />
+            <div className="w-16 h-16 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-4">
+              <Briefcase size={32} className="text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-semibold text-zinc-300 mb-2">
+            <h3 className="text-lg font-semibold text-foreground mb-2">
               No jobs found
             </h3>
-            <p className="text-zinc-500 text-sm max-w-md mx-auto">
+            <p className="text-muted-foreground text-sm max-w-md mx-auto">
               Try adjusting your search filters or check back later for new
               opportunities.
             </p>
@@ -260,14 +240,14 @@ function HomePage() {
                   params={{ id: job.id }}
                   className="group"
                 >
-                  <Card className="border-zinc-800/60 bg-zinc-900/60 hover:bg-zinc-800/60 hover:border-zinc-700/60 transition-all duration-200 h-full cursor-pointer group-hover:shadow-lg group-hover:shadow-teal-500/5">
+                  <Card className="border-border bg-card hover:bg-muted/50 hover:border-border/80 transition-all duration-200 h-full cursor-pointer group-hover:shadow-lg group-hover:shadow-teal-500/5">
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-zinc-100 group-hover:text-teal-400 transition-colors truncate">
+                          <h3 className="font-semibold text-foreground group-hover:text-teal-400 transition-colors truncate">
                             {job.title}
                           </h3>
-                          <div className="flex items-center gap-1.5 mt-1 text-sm text-zinc-400">
+                          <div className="flex items-center gap-1.5 mt-1 text-sm text-muted-foreground">
                             <Building2 size={14} className="shrink-0" />
                             <span className="truncate">
                               {job.employerProfile?.companyName || 'Company'}
@@ -276,17 +256,17 @@ function HomePage() {
                         </div>
                         <ArrowRight
                           size={16}
-                          className="text-zinc-600 group-hover:text-teal-400 transition-colors shrink-0 mt-1"
+                          className="text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1"
                         />
                       </div>
                     </CardHeader>
 
                     <CardContent className="space-y-3">
-                      <p className="text-sm text-zinc-500 line-clamp-2 leading-relaxed">
+                      <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                         {job.description}
                       </p>
 
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-400">
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <MapPin size={12} />
                           {job.location}
@@ -294,9 +274,7 @@ function HomePage() {
                         {(job.salaryMin || job.salaryMax) && (
                           <span className="flex items-center gap-1">
                             <IndianRupee size={12} />
-                            {formatSalary(job.salaryMin)}
-                            {job.salaryMin && job.salaryMax && ' – '}
-                            {formatSalary(job.salaryMax)}
+                            {formatSalaryRange(job.salaryMin, job.salaryMax)}
                           </span>
                         )}
                       </div>
@@ -304,11 +282,11 @@ function HomePage() {
                       <div className="flex items-center justify-between pt-1">
                         <Badge
                           variant="outline"
-                          className={`text-[10px] font-semibold ${JOB_TYPE_COLORS[job.jobType] || 'border-zinc-700 text-zinc-400'}`}
+                          className={`text-[10px] font-semibold ${JOB_TYPE_COLORS[job.jobType] || 'border-border text-muted-foreground'}`}
                         >
                           {JOB_TYPE_LABELS[job.jobType] || job.jobType}
                         </Badge>
-                        <span className="flex items-center gap-1 text-[11px] text-zinc-500">
+                        <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
                           <Clock size={10} />
                           {timeAgo(job.createdAt)}
                         </span>
@@ -327,7 +305,7 @@ function HomePage() {
                   size="sm"
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="border-zinc-700 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 cursor-pointer"
+                  className="border-input text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer"
                 >
                   <ChevronLeft size={16} />
                 </Button>
@@ -354,8 +332,8 @@ function HomePage() {
                         onClick={() => setPage(pageNum)}
                         className={
                           page === pageNum
-                            ? 'bg-teal-500 text-zinc-900 hover:bg-teal-400 cursor-pointer'
-                            : 'border-zinc-700 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 cursor-pointer'
+                            ? 'bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer'
+                            : 'border-input text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer'
                         }
                       >
                         {pageNum}
@@ -373,7 +351,7 @@ function HomePage() {
                     )
                   }
                   disabled={page === data.pagination.totalPages}
-                  className="border-zinc-700 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 cursor-pointer"
+                  className="border-input text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer"
                 >
                   <ChevronRight size={16} />
                 </Button>

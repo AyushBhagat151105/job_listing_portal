@@ -11,19 +11,20 @@ import jobRoutes from "./routes/job.routes";
 import applicationRoutes from "./routes/application.routes";
 import dashboardRoutes from "./routes/dashboard.routes";
 import healthRoutes from "./routes/health.routes";
+import { config } from "./config";
 
 const app = express();
 
 app.use(
     cors({
-        origin: "http://localhost:3001",
+        origin: config.FRONTEND_URL,
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
         allowedHeaders: "Content-Type,Authorization",
         credentials: true,
     })
 );
 
-app.all("/api/auth/*splat", toNodeHandler(auth));
+app.use("/api/auth", toNodeHandler(auth));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

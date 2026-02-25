@@ -116,10 +116,10 @@ function SeekerProfilePage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 w-48 bg-zinc-800 rounded" />
+          <div className="h-8 w-48 bg-muted rounded" />
           <div className="space-y-4">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-10 bg-zinc-800 rounded" />
+              <div key={i} className="h-10 bg-muted rounded" />
             ))}
           </div>
         </div>
@@ -134,16 +134,16 @@ function SeekerProfilePage() {
           <User size={20} className="text-zinc-900" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">
+          <h1 className="text-2xl font-bold text-foreground">
             Job Seeker Profile
           </h1>
-          <p className="text-sm text-zinc-400">
+          <p className="text-sm text-muted-foreground">
             {profile ? 'Update your profile' : 'Create your profile'}
           </p>
         </div>
       </div>
 
-      <Card className="border-zinc-800/60 bg-zinc-900/60">
+      <Card className="border-border bg-card">
         <CardContent className="p-6">
           <form
             onSubmit={(e) => {
@@ -167,14 +167,14 @@ function SeekerProfilePage() {
             <form.Field name="headline">
               {(field) => (
                 <div className="space-y-2">
-                  <Label className="text-zinc-300">Headline</Label>
+                  <Label className="text-foreground">Headline</Label>
                   <Input
                     placeholder="e.g. Full Stack Developer"
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                     maxLength={200}
-                    className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
+                    className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                   />
                   {field.state.meta.errors.length > 0 && (
                     <p className="text-xs text-red-400">{field.state.meta.errors.join(', ')}</p>
@@ -186,7 +186,7 @@ function SeekerProfilePage() {
             <form.Field name="summary">
               {(field) => (
                 <div className="space-y-2">
-                  <Label className="text-zinc-300">Summary</Label>
+                  <Label className="text-foreground">Summary</Label>
                   <Textarea
                     placeholder="Tell employers about yourself..."
                     value={field.state.value}
@@ -194,7 +194,7 @@ function SeekerProfilePage() {
                     onChange={(e) => field.handleChange(e.target.value)}
                     maxLength={2000}
                     rows={4}
-                    className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 resize-none"
+                    className="bg-background border-input text-foreground placeholder:text-muted-foreground resize-none"
                   />
                 </div>
               )}
@@ -204,14 +204,14 @@ function SeekerProfilePage() {
               <form.Field name="phone">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label className="text-zinc-300">Phone</Label>
+                    <Label className="text-foreground">Phone</Label>
                     <Input
                       placeholder="+91-9876543210"
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       maxLength={20}
-                      className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
+                      className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
                 )}
@@ -219,14 +219,14 @@ function SeekerProfilePage() {
               <form.Field name="location">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label className="text-zinc-300">Location</Label>
+                    <Label className="text-foreground">Location</Label>
                     <Input
                       placeholder="Mumbai, India"
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       maxLength={200}
-                      className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
+                      className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
                 )}
@@ -236,13 +236,13 @@ function SeekerProfilePage() {
             <form.Field name="resumeUrl">
               {(field) => (
                 <div className="space-y-2">
-                  <Label className="text-zinc-300">Resume URL</Label>
+                  <Label className="text-foreground">Resume URL</Label>
                   <Input
                     placeholder="https://example.com/resume.pdf"
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
+                    className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                   />
                   {field.state.meta.errors.length > 0 && (
                     <p className="text-xs text-red-400">{field.state.meta.errors.join(', ')}</p>
@@ -253,8 +253,8 @@ function SeekerProfilePage() {
 
             {/* Skills (manual — not part of form schema since it's a tag input) */}
             <div className="space-y-2">
-              <Label className="text-zinc-300">
-                Skills <span className="text-zinc-500">({skills.length}/30)</span>
+              <Label className="text-foreground">
+                Skills <span className="text-muted-foreground">({skills.length}/30)</span>
               </Label>
               <div className="flex gap-2">
                 <Input
@@ -274,7 +274,7 @@ function SeekerProfilePage() {
                   type="button"
                   variant="outline"
                   onClick={addSkill}
-                  className="border-zinc-700 text-zinc-300 shrink-0 cursor-pointer"
+                  className="border-input text-foreground shrink-0 cursor-pointer"
                 >
                   <Plus size={16} />
                 </Button>

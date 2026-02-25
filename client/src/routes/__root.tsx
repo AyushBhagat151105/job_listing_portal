@@ -8,6 +8,7 @@ import {
 import Header from '../components/Header'
 
 import TanStackQueryProvider from '../integrations/tanstack-query/root-provider'
+import { ThemeProvider } from '../components/theme-provider'
 
 import appCss from '../styles.css?url'
 
@@ -28,12 +29,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'JobPortal — Find Your Next Opportunity',
+        title: 'NexHire | The Supreme Gateway to Your Next Career Move',
       },
       {
         name: 'description',
         content:
-          'JobPortal connects job seekers with top employers. Browse thousands of jobs, apply instantly, and track your applications.',
+          'NexHire connects ambitious job seekers with top-tier employers. Browse thousands of jobs, apply instantly, and track your applications.',
       },
     ],
     links: [
@@ -62,7 +63,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootComponent() {
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
       <Header />
       <Outlet />
     </div>
@@ -71,14 +72,16 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body>
-        <TanStackQueryProvider>
-          {children}
-        </TanStackQueryProvider>
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <TanStackQueryProvider>
+            {children}
+          </TanStackQueryProvider>
+        </ThemeProvider>
         <Scripts />
       </body>
     </html>

@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '../lib/api'
 import type { ApiResponse, JobApplication } from '../lib/api'
 import { useAuthGuard } from '../hooks/useAuthGuard'
+import { timeAgo } from '../lib/utils'
+import { STATUS_COLORS } from '../lib/constants'
 
 import { Card, CardContent } from '#/components/ui/card'
 import { Badge } from '#/components/ui/badge'
@@ -13,26 +15,12 @@ export const Route = createFileRoute('/applications')({
   component: ApplicationsPage,
 })
 
-const STATUS_COLORS: Record<string, string> = {
-  PENDING: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  REVIEWED: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
-  SHORTLISTED: 'bg-violet-500/10 text-violet-400 border-violet-500/30',
-  ACCEPTED: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-  REJECTED: 'bg-red-500/10 text-red-400 border-red-500/30',
-}
 
-function timeAgo(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const days = Math.floor(diff / 86400000)
-  if (days === 0) return 'Today'
-  if (days === 1) return 'Yesterday'
-  if (days < 7) return `${days}d ago`
-  if (days < 30) return `${Math.floor(days / 7)}w ago`
-  return `${Math.floor(days / 30)}mo ago`
-}
+
+
 
 function ApplicationsPage() {
-  const { isPending: authPending } = useAuthGuard('job_seeker')
+  const { isPending: authPending } = useAuthGuard('job_seeker', { requireProfile: true })
 
   const { data: applications, isLoading } = useQuery({
     queryKey: ['my-applications'],
@@ -47,10 +35,10 @@ function ApplicationsPage() {
   if (authPending || isLoading) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-8">
-        <Skeleton className="h-8 w-48 bg-zinc-800 mb-8" />
+        <Skeleton className="h-8 w-48 bg-muted mb-8" />
         <div className="space-y-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-24 bg-zinc-800 rounded-xl" />
+            <Skeleton key={i} className="h-24 bg-muted rounded-xl" />
           ))}
         </div>
       </div>
@@ -64,8 +52,8 @@ function ApplicationsPage() {
           <FileText size={20} className="text-zinc-900" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">My Applications</h1>
-          <p className="text-sm text-zinc-400">
+          <h1 className="text-2xl font-bold text-foreground">My Applications</h1>
+          <p className="text-sm text-muted-foreground">
             {applications?.length || 0} application
             {applications?.length !== 1 ? 's' : ''}
           </p>
@@ -74,13 +62,13 @@ function ApplicationsPage() {
 
       {!applications?.length ? (
         <div className="text-center py-20">
-          <div className="w-16 h-16 rounded-2xl bg-zinc-800/50 flex items-center justify-center mx-auto mb-4">
-            <FileText size={32} className="text-zinc-600" />
+          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
+            <FileText size={32} className="text-muted-foreground" />
           </div>
-          <h3 className="text-lg font-semibold text-zinc-300 mb-2">
+          <h3 className="text-lg font-semibold text-foreground mb-2">
             No applications yet
           </h3>
-          <p className="text-zinc-500 text-sm mb-6">
+          <p className="text-muted-foreground text-sm mb-6">
             Start browsing jobs and apply to positions that interest you.
           </p>
           <Link
@@ -95,7 +83,7 @@ function ApplicationsPage() {
           {applications.map((app) => (
             <Card
               key={app.id}
-              className="border-zinc-800/60 bg-zinc-900/60 hover:border-zinc-700/60 transition-colors"
+              className="border-border bg-card hover:border-border/80 transition-colors"
             >
               <CardContent className="p-5">
                 <div className="flex items-start justify-between gap-4">
@@ -104,12 +92,12 @@ function ApplicationsPage() {
                       <Link
                         to="/jobs/$id"
                         params={{ id: app.jobListingId }}
-                        className="text-base font-semibold text-zinc-200 hover:text-teal-400 transition-colors truncate"
+                        className="text-base font-semibold text-foreground hover:text-teal-400 transition-colors truncate"
                       >
                         {app.jobListing?.title || 'Job Title'}
                       </Link>
                     </div>
-                    <div className="flex items-center gap-3 text-sm text-zinc-400">
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1.5">
                         <Building2 size={12} />
                         {app.jobListing?.employerProfile?.companyName || 'Company'}
@@ -120,7 +108,7 @@ function ApplicationsPage() {
                           {app.jobListing.location}
                         </span>
                       )}
-                      <span className="flex items-center gap-1.5 text-zinc-500">
+                      <span className="flex items-center gap-1.5 text-muted-foreground">
                         <Clock size={12} />
                         {timeAgo(app.createdAt)}
                       </span>
@@ -129,7 +117,7 @@ function ApplicationsPage() {
 
                   <Badge
                     variant="outline"
-                    className={`text-[10px] font-semibold shrink-0 ${STATUS_COLORS[app.status] || 'border-zinc-700 text-zinc-400'}`}
+                    className={`text-[10px] font-semibold shrink-0 ${STATUS_COLORS[app.status] || 'border-border text-muted-foreground'}`}
                   >
                     {app.status}
                   </Badge>

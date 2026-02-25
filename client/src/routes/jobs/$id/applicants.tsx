@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '../../../lib/api'
 import type { ApiResponse, JobListing, JobApplication } from '../../../lib/api'
 import { useAuthGuard } from '../../../hooks/useAuthGuard'
+import { timeAgo } from '../../../lib/utils'
+import { STATUS_COLORS } from '../../../lib/constants'
 
 import { Card, CardContent } from '#/components/ui/card'
 import { Badge } from '#/components/ui/badge'
@@ -26,25 +28,12 @@ export const Route = createFileRoute('/jobs/$id/applicants')({
   component: ApplicantsPage,
 })
 
-const STATUS_COLORS: Record<string, string> = {
-  PENDING: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  REVIEWED: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
-  SHORTLISTED: 'bg-violet-500/10 text-violet-400 border-violet-500/30',
-  ACCEPTED: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-  REJECTED: 'bg-red-500/10 text-red-400 border-red-500/30',
-}
 
-function timeAgo(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const days = Math.floor(diff / 86400000)
-  if (days === 0) return 'Today'
-  if (days === 1) return 'Yesterday'
-  if (days < 7) return `${days}d ago`
-  return `${Math.floor(days / 7)}w ago`
-}
+
+
 
 function ApplicantsPage() {
-  const { isPending: authPending } = useAuthGuard('employer')
+  const { isPending: authPending } = useAuthGuard('employer', { requireProfile: true })
   const { id } = Route.useParams()
   const queryClient = useQueryClient()
 
@@ -84,10 +73,10 @@ function ApplicantsPage() {
   if (authPending || isLoading) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-8">
-        <Skeleton className="h-8 w-64 bg-zinc-800 mb-6" />
+        <Skeleton className="h-8 w-64 bg-muted mb-6" />
         <div className="space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-32 bg-zinc-800 rounded-xl" />
+            <Skeleton key={i} className="h-32 bg-muted rounded-xl" />
           ))}
         </div>
       </div>
@@ -98,7 +87,7 @@ function ApplicantsPage() {
     <div className="max-w-3xl mx-auto px-4 py-8">
       <Link
         to="/dashboard/employer"
-        className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-teal-400 transition-colors mb-6"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-teal-400 transition-colors mb-6"
       >
         <ArrowLeft size={16} />
         Back to Dashboard
@@ -109,8 +98,8 @@ function ApplicantsPage() {
           <Users size={20} className="text-zinc-900" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">Applicants</h1>
-          <p className="text-sm text-zinc-400">
+          <h1 className="text-2xl font-bold text-foreground">Applicants</h1>
+          <p className="text-sm text-muted-foreground">
             {job?.title || 'Job'} — {applications?.length || 0} applicant
             {applications?.length !== 1 ? 's' : ''}
           </p>
@@ -119,13 +108,13 @@ function ApplicantsPage() {
 
       {!applications?.length ? (
         <div className="text-center py-20">
-          <div className="w-16 h-16 rounded-2xl bg-zinc-800/50 flex items-center justify-center mx-auto mb-4">
-            <Users size={32} className="text-zinc-600" />
+          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
+            <Users size={32} className="text-muted-foreground" />
           </div>
-          <h3 className="text-lg font-semibold text-zinc-300 mb-2">
+          <h3 className="text-lg font-semibold text-foreground mb-2">
             No applicants yet
           </h3>
-          <p className="text-zinc-500 text-sm">
+          <p className="text-muted-foreground text-sm">
             Share your job listing to attract candidates.
           </p>
         </div>
@@ -134,26 +123,26 @@ function ApplicantsPage() {
           {applications.map((app) => (
             <Card
               key={app.id}
-              className="border-zinc-800/60 bg-zinc-900/60"
+              className="border-border bg-card"
             >
               <CardContent className="p-5">
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-semibold text-zinc-200 hover:text-teal-400 transition-colors">
+                    <h3 className="text-base font-semibold text-foreground hover:text-teal-400 transition-colors">
                       <Link to="/applicant/$id" params={{ id: app.applicant?.jobSeekerProfile?.userId || '' }}>
                         {app.applicant?.name || 'Applicant'}
                       </Link>
                     </h3>
-                    <p className="text-sm text-zinc-500">
+                    <p className="text-sm text-muted-foreground">
                       {app.applicant?.email}
                     </p>
                     {app.applicant?.jobSeekerProfile?.headline && (
-                      <p className="text-sm text-zinc-400 mt-1">
+                      <p className="text-sm text-muted-foreground mt-1">
                         {app.applicant.jobSeekerProfile.headline}
                       </p>
                     )}
                     {app.applicant?.jobSeekerProfile?.location && (
-                      <span className="text-xs text-zinc-500 flex items-center gap-1 mt-1">
+                      <span className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                         <MapPin size={10} />
                         {app.applicant.jobSeekerProfile.location}
                       </span>
@@ -164,15 +153,15 @@ function ApplicantsPage() {
                     {app.matchScore != null && (
                       <div className="flex items-center gap-1.5 text-sm">
                         <Star size={14} className="text-amber-400" />
-                        <span className="font-semibold text-zinc-200">
+                        <span className="font-semibold text-foreground">
                           {app.matchScore}%
                         </span>
-                        <span className="text-zinc-500 text-xs">match</span>
+                        <span className="text-muted-foreground text-xs">match</span>
                       </div>
                     )}
                     <Badge
                       variant="outline"
-                      className={`text-[10px] font-semibold ${STATUS_COLORS[app.status] || 'border-zinc-700 text-zinc-400'}`}
+                      className={`text-[10px] font-semibold ${STATUS_COLORS[app.status] || 'border-border text-muted-foreground'}`}
                     >
                       {app.status}
                     </Badge>
@@ -188,7 +177,7 @@ function ApplicantsPage() {
                         <Badge
                           key={skill}
                           variant="outline"
-                          className="text-[10px] bg-zinc-800/50 text-zinc-400 border-zinc-700"
+                          className="text-[10px] bg-muted text-muted-foreground border-border"
                         >
                           {skill}
                         </Badge>
@@ -196,7 +185,7 @@ function ApplicantsPage() {
                     {app.applicant.jobSeekerProfile.skills.length > 6 && (
                       <Badge
                         variant="outline"
-                        className="text-[10px] bg-zinc-800/50 text-zinc-500 border-zinc-700"
+                        className="text-[10px] bg-muted text-muted-foreground border-border"
                       >
                         +{app.applicant.jobSeekerProfile.skills.length - 6}
                       </Badge>
@@ -205,7 +194,7 @@ function ApplicantsPage() {
                 ) : null}
 
                 {app.coverLetter && (
-                  <p className="text-sm text-zinc-400 bg-zinc-800/30 rounded-lg p-3 mb-4 leading-relaxed">
+                  <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-3 mb-4 leading-relaxed">
                     {app.coverLetter}
                   </p>
                 )}
@@ -227,12 +216,12 @@ function ApplicantsPage() {
                     )}
 
                     {app.matchDetails && app.matchDetails.length > 0 && (
-                      <div className="space-y-1.5 p-3 rounded-lg bg-zinc-800/20 border border-zinc-800/50">
-                        <p className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
+                      <div className="space-y-1.5 p-3 rounded-lg bg-muted/30 border border-border/50">
+                        <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
                           <Star size={12} className="text-amber-400" />
                           Match Insights
                         </p>
-                        <ul className="text-xs text-zinc-400 space-y-1 pl-4 list-disc">
+                        <ul className="text-xs text-muted-foreground space-y-1 pl-4 list-disc">
                           {app.matchDetails.map((detail, idx) => (
                             <li key={idx}>{detail}</li>
                           ))}
@@ -243,7 +232,7 @@ function ApplicantsPage() {
                 )}
 
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-zinc-500">
+                  <span className="text-xs text-muted-foreground">
                     Applied {timeAgo(app.createdAt)}
                   </span>
 
@@ -256,10 +245,10 @@ function ApplicantsPage() {
                       })
                     }
                   >
-                    <SelectTrigger className="w-36 h-8 text-xs bg-zinc-800/50 border-zinc-700 text-zinc-300">
+                    <SelectTrigger className="w-36 h-8 text-xs bg-background border-input text-foreground">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-zinc-900 border-zinc-800">
+                    <SelectContent className="bg-popover border-border text-popover-foreground">
                       <SelectItem value="PENDING">Pending</SelectItem>
                       <SelectItem value="REVIEWED">Reviewed</SelectItem>
                       <SelectItem value="SHORTLISTED">Shortlisted</SelectItem>

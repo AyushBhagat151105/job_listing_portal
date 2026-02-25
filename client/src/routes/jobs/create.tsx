@@ -41,7 +41,7 @@ const createJobSchema = z.object({
 })
 
 function CreateJobPage() {
-  useAuthGuard('employer')
+  useAuthGuard('employer', { requireProfile: true })
   const navigate = useNavigate()
   const [serverError, setServerError] = useState('')
 
@@ -91,14 +91,14 @@ function CreateJobPage() {
           <Briefcase size={20} className="text-zinc-900" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">Post a Job</h1>
-          <p className="text-sm text-zinc-400">
+          <h1 className="text-2xl font-bold text-foreground">Post a Job</h1>
+          <p className="text-sm text-muted-foreground">
             Create a new job listing for your company
           </p>
         </div>
       </div>
 
-      <Card className="border-zinc-800/60 bg-zinc-900/60">
+      <Card className="border-border bg-card">
         <CardContent className="p-6">
           <form
             onSubmit={(e) => {
@@ -117,7 +117,7 @@ function CreateJobPage() {
             <form.Field name="title">
               {(field) => (
                 <div className="space-y-2">
-                  <Label className="text-zinc-300">
+                  <Label className="text-foreground">
                     Job Title <span className="text-red-400">*</span>
                   </Label>
                   <Input
@@ -126,7 +126,7 @@ function CreateJobPage() {
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                     maxLength={200}
-                    className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
+                    className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                   />
                   {field.state.meta.errors.length > 0 && (
                     <p className="text-xs text-red-400">{field.state.meta.errors.join(', ')}</p>
@@ -138,7 +138,7 @@ function CreateJobPage() {
             <form.Field name="description">
               {(field) => (
                 <div className="space-y-2">
-                  <Label className="text-zinc-300">
+                  <Label className="text-foreground">
                     Description <span className="text-red-400">*</span>
                   </Label>
                   <Textarea
@@ -148,7 +148,7 @@ function CreateJobPage() {
                     onChange={(e) => field.handleChange(e.target.value)}
                     maxLength={5000}
                     rows={5}
-                    className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 resize-none"
+                    className="bg-background border-input text-foreground placeholder:text-muted-foreground resize-none"
                   />
                   {field.state.meta.errors.length > 0 && (
                     <p className="text-xs text-red-400">{field.state.meta.errors.join(', ')}</p>
@@ -160,7 +160,7 @@ function CreateJobPage() {
             <form.Field name="qualifications">
               {(field) => (
                 <div className="space-y-2">
-                  <Label className="text-zinc-300">Qualifications</Label>
+                  <Label className="text-foreground">Qualifications</Label>
                   <Textarea
                     placeholder="Required qualifications and experience..."
                     value={field.state.value}
@@ -168,7 +168,7 @@ function CreateJobPage() {
                     onChange={(e) => field.handleChange(e.target.value)}
                     maxLength={3000}
                     rows={3}
-                    className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 resize-none"
+                    className="bg-background border-input text-foreground placeholder:text-muted-foreground resize-none"
                   />
                 </div>
               )}
@@ -177,7 +177,7 @@ function CreateJobPage() {
             <form.Field name="responsibilities">
               {(field) => (
                 <div className="space-y-2">
-                  <Label className="text-zinc-300">Responsibilities</Label>
+                  <Label className="text-foreground">Responsibilities</Label>
                   <Textarea
                     placeholder="Key responsibilities and duties..."
                     value={field.state.value}
@@ -185,7 +185,7 @@ function CreateJobPage() {
                     onChange={(e) => field.handleChange(e.target.value)}
                     maxLength={3000}
                     rows={3}
-                    className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 resize-none"
+                    className="bg-background border-input text-foreground placeholder:text-muted-foreground resize-none"
                   />
                 </div>
               )}
@@ -195,7 +195,7 @@ function CreateJobPage() {
               <form.Field name="location">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label className="text-zinc-300">
+                    <Label className="text-foreground">
                       Location <span className="text-red-400">*</span>
                     </Label>
                     <Input
@@ -204,7 +204,7 @@ function CreateJobPage() {
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       maxLength={200}
-                      className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
+                      className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                     />
                     {field.state.meta.errors.length > 0 && (
                       <p className="text-xs text-red-400">{field.state.meta.errors.join(', ')}</p>
@@ -216,7 +216,7 @@ function CreateJobPage() {
               <form.Field name="jobType">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label className="text-zinc-300">
+                    <Label className="text-foreground">
                       Job Type <span className="text-red-400">*</span>
                     </Label>
                     <Select
@@ -225,10 +225,10 @@ function CreateJobPage() {
                         field.handleChange(val as any)
                       }
                     >
-                      <SelectTrigger className="bg-zinc-800/50 border-zinc-700 text-zinc-300">
+                      <SelectTrigger className="bg-background border-input text-foreground">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-zinc-900 border-zinc-800">
+                      <SelectContent className="bg-popover border-border text-popover-foreground">
                         <SelectItem value="FULL_TIME">Full Time</SelectItem>
                         <SelectItem value="PART_TIME">Part Time</SelectItem>
                         <SelectItem value="CONTRACT">Contract</SelectItem>
@@ -245,7 +245,7 @@ function CreateJobPage() {
               <form.Field name="salaryMin">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label className="text-zinc-300">
+                    <Label className="text-foreground">
                       Salary Min <span className="text-zinc-500">(₹/year)</span>
                     </Label>
                     <Input
@@ -259,7 +259,7 @@ function CreateJobPage() {
                         )
                       }
                       min={0}
-                      className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
+                      className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
                 )}
@@ -267,7 +267,7 @@ function CreateJobPage() {
               <form.Field name="salaryMax">
                 {(field) => (
                   <div className="space-y-2">
-                    <Label className="text-zinc-300">
+                    <Label className="text-foreground">
                       Salary Max <span className="text-zinc-500">(₹/year)</span>
                     </Label>
                     <Input
@@ -281,7 +281,7 @@ function CreateJobPage() {
                         )
                       }
                       min={0}
-                      className="bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500"
+                      className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                     />
                     {field.state.meta.errors.length > 0 && (
                       <p className="text-xs text-red-400">{field.state.meta.errors.join(', ')}</p>
@@ -298,7 +298,8 @@ function CreateJobPage() {
                 <Button
                   type="submit"
                   disabled={!canSubmit || isSubmitting}
-                  className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-zinc-900 font-semibold shadow-lg shadow-teal-500/20 cursor-pointer"
+                  variant="outline"
+                  className="w-full cursor-pointer"
                 >
                   {isSubmitting ? (
                     <Loader2 size={16} className="animate-spin mr-2" />
