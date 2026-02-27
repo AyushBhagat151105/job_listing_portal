@@ -9,6 +9,7 @@ import Header from '../components/Header'
 
 import TanStackQueryProvider from '../integrations/tanstack-query/root-provider'
 import { ThemeProvider } from '../components/theme-provider'
+import { Toaster } from '#/components/ui/sonner'
 
 import { useEffect } from 'react'
 import { authClient } from '../lib/auth-client'
@@ -133,6 +134,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <TanStackQueryProvider>
             {children}
           </TanStackQueryProvider>
+          <Toaster />
         </ThemeProvider>
         <Scripts />
       </body>

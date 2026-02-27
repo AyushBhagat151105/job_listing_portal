@@ -85,7 +85,7 @@ function EmployerManageJobsPage() {
                         <p className="text-muted-foreground max-w-md mx-auto">
                             You need to complete your company profile before you can manage jobs or applications.
                         </p>
-                        <Link to="/profile/employer">
+                        <Link to="/settings">
                             <Button className="bg-amber-500 hover:bg-amber-400 text-zinc-900">
                                 Create Profile
                             </Button>

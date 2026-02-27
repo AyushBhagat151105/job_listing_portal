@@ -161,10 +161,7 @@ export default function Header() {
                   <DropdownMenuItem
                     onClick={() =>
                       navigate({
-                        to:
-                          role === 'employer'
-                            ? '/profile/employer'
-                            : '/profile/seeker',
+                        to: '/settings'
                       })
                     }
                     className="text-zinc-300 focus:bg-zinc-800 focus:text-zinc-100 cursor-pointer"

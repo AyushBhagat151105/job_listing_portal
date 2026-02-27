@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { authClient } from '../lib/auth-client'
 import { api } from '../lib/api'
+import { toast } from 'sonner'
 
 /**
  * Hook that redirects to /sign-in if the user is not authenticated.
@@ -53,10 +54,13 @@ export function useAuthGuard(
 
         if (options?.requireProfile && !profilePending && role) {
             if (!profile) {
-                // Determine redirect path
-                const targetPath = role === 'employer' ? '/profile/employer' : '/profile/seeker'
+                const targetPath = '/settings'
                 // Prevent infinite redirect if already on the profile page
                 if (location.pathname !== targetPath) {
+                    toast.error('Profile Incomplete', {
+                        description: 'Please complete your profile details to access this feature.',
+                        duration: 5000,
+                    })
                     navigate({ to: targetPath as any })
                 }
             }

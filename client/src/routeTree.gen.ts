@@ -14,8 +14,6 @@ import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ApplicationsRouteImport } from './routes/applications'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ProfileSeekerRouteImport } from './routes/profile/seeker'
-import { Route as ProfileEmployerRouteImport } from './routes/profile/employer'
 import { Route as JobsCreateRouteImport } from './routes/jobs/create'
 import { Route as DashboardSeekerRouteImport } from './routes/dashboard/seeker'
 import { Route as DashboardJobsRouteImport } from './routes/dashboard/jobs'
@@ -47,16 +45,6 @@ const ApplicationsRoute = ApplicationsRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileSeekerRoute = ProfileSeekerRouteImport.update({
-  id: '/profile/seeker',
-  path: '/profile/seeker',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileEmployerRoute = ProfileEmployerRouteImport.update({
-  id: '/profile/employer',
-  path: '/profile/employer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JobsCreateRoute = JobsCreateRouteImport.update({
@@ -106,8 +94,6 @@ export interface FileRoutesByFullPath {
   '/dashboard/jobs': typeof DashboardJobsRoute
   '/dashboard/seeker': typeof DashboardSeekerRoute
   '/jobs/create': typeof JobsCreateRoute
-  '/profile/employer': typeof ProfileEmployerRoute
-  '/profile/seeker': typeof ProfileSeekerRoute
   '/jobs/$id/applicants': typeof JobsIdApplicantsRoute
   '/jobs/$id/': typeof JobsIdIndexRoute
 }
@@ -122,8 +108,6 @@ export interface FileRoutesByTo {
   '/dashboard/jobs': typeof DashboardJobsRoute
   '/dashboard/seeker': typeof DashboardSeekerRoute
   '/jobs/create': typeof JobsCreateRoute
-  '/profile/employer': typeof ProfileEmployerRoute
-  '/profile/seeker': typeof ProfileSeekerRoute
   '/jobs/$id/applicants': typeof JobsIdApplicantsRoute
   '/jobs/$id': typeof JobsIdIndexRoute
 }
@@ -139,8 +123,6 @@ export interface FileRoutesById {
   '/dashboard/jobs': typeof DashboardJobsRoute
   '/dashboard/seeker': typeof DashboardSeekerRoute
   '/jobs/create': typeof JobsCreateRoute
-  '/profile/employer': typeof ProfileEmployerRoute
-  '/profile/seeker': typeof ProfileSeekerRoute
   '/jobs/$id/applicants': typeof JobsIdApplicantsRoute
   '/jobs/$id/': typeof JobsIdIndexRoute
 }
@@ -157,8 +139,6 @@ export interface FileRouteTypes {
     | '/dashboard/jobs'
     | '/dashboard/seeker'
     | '/jobs/create'
-    | '/profile/employer'
-    | '/profile/seeker'
     | '/jobs/$id/applicants'
     | '/jobs/$id/'
   fileRoutesByTo: FileRoutesByTo
@@ -173,8 +153,6 @@ export interface FileRouteTypes {
     | '/dashboard/jobs'
     | '/dashboard/seeker'
     | '/jobs/create'
-    | '/profile/employer'
-    | '/profile/seeker'
     | '/jobs/$id/applicants'
     | '/jobs/$id'
   id:
@@ -189,8 +167,6 @@ export interface FileRouteTypes {
     | '/dashboard/jobs'
     | '/dashboard/seeker'
     | '/jobs/create'
-    | '/profile/employer'
-    | '/profile/seeker'
     | '/jobs/$id/applicants'
     | '/jobs/$id/'
   fileRoutesById: FileRoutesById
@@ -206,8 +182,6 @@ export interface RootRouteChildren {
   DashboardJobsRoute: typeof DashboardJobsRoute
   DashboardSeekerRoute: typeof DashboardSeekerRoute
   JobsCreateRoute: typeof JobsCreateRoute
-  ProfileEmployerRoute: typeof ProfileEmployerRoute
-  ProfileSeekerRoute: typeof ProfileSeekerRoute
   JobsIdApplicantsRoute: typeof JobsIdApplicantsRoute
   JobsIdIndexRoute: typeof JobsIdIndexRoute
 }
@@ -247,20 +221,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile/seeker': {
-      id: '/profile/seeker'
-      path: '/profile/seeker'
-      fullPath: '/profile/seeker'
-      preLoaderRoute: typeof ProfileSeekerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile/employer': {
-      id: '/profile/employer'
-      path: '/profile/employer'
-      fullPath: '/profile/employer'
-      preLoaderRoute: typeof ProfileEmployerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/jobs/create': {
@@ -326,8 +286,6 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardJobsRoute: DashboardJobsRoute,
   DashboardSeekerRoute: DashboardSeekerRoute,
   JobsCreateRoute: JobsCreateRoute,
-  ProfileEmployerRoute: ProfileEmployerRoute,
-  ProfileSeekerRoute: ProfileSeekerRoute,
   JobsIdApplicantsRoute: JobsIdApplicantsRoute,
   JobsIdIndexRoute: JobsIdIndexRoute,
 }

@@ -36,10 +36,20 @@
       "sourceType": "github",
       "computedHash": "65764bc7b90e47f6023cb7f89b3af93eaaafc517754f10b9382e184d4646a77d"
     },
+    "ui-ux-pro-max": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "computedHash": "2cc9bf0201da1fbf1eb7a68a757536ee612f460b0a3401f034bbe30910b4a278"
+    },
     "uiux-excellence-guide": {
       "source": "jpkovas/uiux-excellence-guide",
       "sourceType": "github",
       "computedHash": "8a5fea21ce1e11443a5f0dac153178f931760c8babf036c1a481671014f73e8e"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
     }
   }
 }
