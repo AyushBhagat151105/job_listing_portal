@@ -8,6 +8,7 @@ import {
     idParamSchema,
     jobIdParamSchema,
 } from "../validators/schemas";
+import { jobApplicationLimiter } from "../middleware/rateLimiter";
 
 import {
     applyForJob,
@@ -22,6 +23,7 @@ router.post(
     "/",
     authMiddleware,
     requireRole("job_seeker"),
+    jobApplicationLimiter,
     validate(createApplicationSchema),
     applyForJob
 );

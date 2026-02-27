@@ -10,9 +10,6 @@
     "build": "bun x prisma generate && bun build src/index.ts --target=bun --outdir=./dist",
     "test": "bun test"
   },
-
-
-
   "devDependencies": {
     "@types/bun": "latest",
     "@types/express": "^5.0.6",
@@ -37,6 +34,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
     "pg": "^8.18.0",
     "prisma": "^7.3.0",
     "swagger-jsdoc": "^6.2.8",

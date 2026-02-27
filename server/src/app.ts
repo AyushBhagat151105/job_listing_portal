@@ -12,6 +12,7 @@ import applicationRoutes from "./routes/application.routes";
 import dashboardRoutes from "./routes/dashboard.routes";
 import healthRoutes from "./routes/health.routes";
 import { config } from "./config";
+import { globalLimiter, authLimiter } from "./middleware/rateLimiter";
 
 const app = express();
 
@@ -24,7 +25,10 @@ app.use(
     })
 );
 
-app.use("/api/auth", toNodeHandler(auth));
+app.use("/api/auth", authLimiter, toNodeHandler(auth));
+
+// Apply global rate limiting to all standard API routes
+app.use("/api/v1", globalLimiter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
