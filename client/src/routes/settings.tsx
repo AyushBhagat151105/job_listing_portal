@@ -99,7 +99,7 @@ function SettingsPage() {
                 <div className="flex-1 min-w-0">
                     <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                         {activeTab === 'profile' && (
-                            (user as any).role === 'employer' ? <EmployerProfileForm /> : <SeekerProfileForm />
+                            (user as typeof user & { role?: string }).role === 'employer' ? <EmployerProfileForm /> : <SeekerProfileForm />
                         )}
                         {activeTab === 'account' && <AccountSettingsTab user={user} />}
                         {activeTab === 'security' && <SecuritySettingsTab />}
@@ -111,7 +111,7 @@ function SettingsPage() {
     )
 }
 
-function AccountSettingsTab({ user }: { user: any }) {
+function AccountSettingsTab({ user }: { user: { name: string, role?: string } | (typeof authClient.$Infer.Session)['user'] }) {
     const [success, setSuccess] = useState('')
     const [serverError, setServerError] = useState('')
 
@@ -151,7 +151,7 @@ function AccountSettingsTab({ user }: { user: any }) {
         setIsDeleting(true)
         setDeleteError('')
         try {
-            const { error }: any = await authClient.deleteUser({
+            const { error } = await authClient.deleteUser({
                 password: deletePassword,
                 callbackURL: '/'
             })
@@ -408,7 +408,7 @@ function SessionsTab() {
 
     const sessions = Array.isArray(sessionsEntry)
         ? sessionsEntry
-        : (sessionsEntry as any)?.sessions || (sessionsEntry as any) || []
+        : ((sessionsEntry as unknown as { sessions?: typeof authClient.$Infer.Session.session[] })?.sessions || sessionsEntry || []) as typeof authClient.$Infer.Session.session[]
 
     const handleRevoke = async (token: string) => {
         await authClient.revokeSession({ token })
@@ -430,7 +430,7 @@ function SessionsTab() {
                     </p>
                 ) : (
                     <div className="space-y-4">
-                        {sessions.map((session: any) => (
+                        {sessions.map((session) => (
                             <div key={session.id} className="flex items-center justify-between p-4 rounded-xl border border-border bg-muted/30 hover:bg-muted/50 transition-colors">
                                 <div className="flex items-center gap-4">
                                     <div className="w-10 h-10 rounded-lg bg-zinc-800 flex items-center justify-center text-muted-foreground border border-border shrink-0">

@@ -27,7 +27,6 @@ import {
 } from '#/components/ui/dialog'
 import {
   MapPin,
-  Building2,
   Clock,
   IndianRupee,
   ArrowLeft,
@@ -61,7 +60,7 @@ function JobDetailsPage() {
   const [applySuccess, setApplySuccess] = useState(false)
 
   const user = session?.user
-  const role = (user as any)?.role as string | undefined
+  const role = (user as typeof user & { role?: string })?.role as string | undefined
 
   const { data: job, isLoading } = useQuery({
     queryKey: ['job', id],
@@ -325,7 +324,7 @@ function JobDetailsPage() {
           >
             {applyMutation.isError && (
               <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-                {(applyMutation.error as any)?.message || 'Failed to submit application'}
+                {applyMutation.error instanceof Error ? applyMutation.error.message : 'Failed to submit application'}
               </div>
             )}
 

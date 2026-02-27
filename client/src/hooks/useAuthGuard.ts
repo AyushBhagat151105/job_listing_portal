@@ -20,7 +20,7 @@ export function useAuthGuard(
     const location = useLocation()
 
     const user = session?.user
-    const role = (user as any)?.role as string | undefined
+    const role = (user as typeof user & { role?: string })?.role as string | undefined
 
     const { data: profile, isPending: profilePending } = useQuery({
         queryKey: ['profile', role],
