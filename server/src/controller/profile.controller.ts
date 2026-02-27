@@ -7,7 +7,24 @@ import { ApiError } from "../utils/apiError";
 import { ApiResponse } from "../utils/apiRespons";
 import type { z } from "zod/v4";
 import type { ValidatedRequest } from "../middleware/validate";
-import { createJobSeekerProfileSchema, updateJobSeekerProfileSchema } from "../validators/schemas";
+import { createJobSeekerProfileSchema, updateJobSeekerProfileSchema, updateRoleSchema } from "../validators/schemas";
+
+export const updateUserRole = asyncHandler(async (req: ValidatedRequest<typeof updateRoleSchema>, res: Response) => {
+    const userId = req.user.id;
+    const { role } = req.body;
+
+    // Auth client API handles role updates in better-auth. We can update prisma directly
+    const userRoleUpdate = await prisma.user.update({
+        where: { id: userId },
+        data: { role }
+    });
+
+    if (!userRoleUpdate) {
+        throw new ApiError(500, "Failed to update role");
+    }
+
+    return res.status(200).json(new ApiResponse(200, "Role updated successfully", userRoleUpdate));
+});
 
 export const getJobSeekerProfile = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const user = req.user.id;

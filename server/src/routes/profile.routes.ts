@@ -8,8 +8,10 @@ import {
     createEmployerProfileSchema,
     updateEmployerProfileSchema,
     idParamSchema,
+    updateRoleSchema
 } from "../validators/schemas";
 import {
+    updateUserRole,
     getJobSeekerProfile,
     createJobSeekerProfile,
     updateJobSeekerProfile,
@@ -22,6 +24,14 @@ import {
 } from "../controller/profile.controller";
 
 const router = Router();
+
+// ─── Role Update ────────────────────────────────────────────
+router.patch(
+    "/role",
+    authMiddleware,
+    validate(updateRoleSchema),
+    updateUserRole
+);
 
 // ─── Job Seeker ─────────────────────────────────────────────
 

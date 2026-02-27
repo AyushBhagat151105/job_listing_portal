@@ -10,6 +10,10 @@ import Header from '../components/Header'
 import TanStackQueryProvider from '../integrations/tanstack-query/root-provider'
 import { ThemeProvider } from '../components/theme-provider'
 
+import { useEffect } from 'react'
+import { authClient } from '../lib/auth-client'
+import { api } from '../lib/api'
+
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
@@ -55,6 +59,22 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         rel: 'stylesheet',
         href: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap',
       },
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: '/favicon.ico',
+      },
+      {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '96x96',
+        href: '/favicon-96x96.png',
+      },
+      {
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        href: '/apple-touch-icon.png',
+      },
     ],
   }),
   component: RootComponent,
@@ -62,6 +82,38 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 })
 
 function RootComponent() {
+  const { data: session } = authClient.useSession()
+
+  useEffect(() => {
+    async function checkAndApplyRole() {
+      if (!session?.user) return
+
+      const pendingRole = localStorage.getItem('signUpRole')
+      if (pendingRole && (pendingRole === 'job_seeker' || pendingRole === 'employer')) {
+        try {
+          // Update role on backend
+          await api.patch('/api/v1/profile/role', { role: pendingRole })
+          // Clear it so it doesn't fire again
+          localStorage.removeItem('signUpRole')
+          // Refresh session to reflect new role globally
+          await authClient.getSession({
+            fetchOptions: {
+              // Force better auth to refresh
+              headers: {
+                'Cache-Control': 'no-cache'
+              }
+            }
+          })
+          window.location.reload() // Force reload to apply layout changes
+        } catch (error) {
+          console.error("Failed to apply pending role:", error)
+        }
+      }
+    }
+
+    checkAndApplyRole()
+  }, [session])
+
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
       <Header />

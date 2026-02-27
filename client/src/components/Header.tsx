@@ -12,7 +12,6 @@ import {
   DropdownMenuTrigger,
 } from '#/components/ui/dropdown-menu'
 import {
-  Briefcase,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -42,17 +41,17 @@ export default function Header() {
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-400 flex items-center justify-center group-hover:shadow-lg group-hover:shadow-teal-500/20 transition-shadow">
-              <Briefcase size={16} className="text-zinc-900" />
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="flex bg-gradient-to-br from-teal-500 to-cyan-500 rounded-xl p-0.5 shadow-lg shadow-teal-500/20 group-hover:shadow-teal-500/30 transition-all duration-300">
+              <img src="/favicon-96x96.png" alt="NexHire Logo" className="w-7 h-7 rounded-[10px]" />
             </div>
-            <span className="text-lg font-bold text-foreground tracking-tight">
-              Nex<span className="text-teal-400">Hire</span>
+            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
+              Nex<span className="text-teal-500">Hire</span>
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
+          {/* <nav className="hidden md:flex items-center gap-1">
             <Link
               to="/"
               className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
@@ -123,7 +122,7 @@ export default function Header() {
                 </Link>
               </>
             )}
-          </nav>
+          </nav> */}
 
           {/* Right side */}
           <div className="flex items-center gap-3">
@@ -132,7 +131,7 @@ export default function Header() {
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-accent transition-colors cursor-pointer">
                     <Avatar className="w-8 h-8 border border-border">
-                      <AvatarImage src={user?.image || undefined} alt={user.name || 'User'} />
+                      <AvatarImage src={user?.image || undefined} alt={user.name || 'User'} referrerPolicy="no-referrer" />
                       <AvatarFallback className="bg-gradient-to-br from-teal-500 to-cyan-500 text-zinc-900 text-xs font-bold">
                         {user.name?.charAt(0)?.toUpperCase() || 'U'}
                       </AvatarFallback>

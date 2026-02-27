@@ -71,6 +71,30 @@ export const registerCustomRoutes = (registry: OpenAPIRegistry) => {
     // ─── Profile Routes ─────────────────────────────────────────
 
     registry.registerPath({
+        method: "patch",
+        path: "/api/v1/profile/role",
+        tags: ["Profile"],
+        summary: "Update user role (typically after OAuth)",
+        security: [{ bearerAuth: [] }],
+        request: {
+            body: {
+                content: {
+                    "application/json": {
+                        schema: z.object({
+                            role: z.enum(["job_seeker", "employer"]).openapi({ example: "employer" }),
+                        }),
+                    },
+                },
+            },
+        },
+        responses: {
+            200: { description: "Role updated successfully", content: { "application/json": { schema: SuccessResponse } } },
+            400: { description: "Validation error", content: { "application/json": { schema: ErrorResponse } } },
+            401: { description: "Unauthorized", content: { "application/json": { schema: ErrorResponse } } },
+        },
+    });
+
+    registry.registerPath({
         method: "get",
         path: "/api/v1/profile/job-seeker",
         tags: ["Profile"],

@@ -13,6 +13,12 @@ export const createJobSeekerProfileSchema = z.object({
 
 export const updateJobSeekerProfileSchema = createJobSeekerProfileSchema;
 
+export const updateRoleSchema = z.object({
+    role: z.enum(["job_seeker", "employer"], {
+        message: "Role must be either 'job_seeker' or 'employer'"
+    }),
+});
+
 // ─── Employer Profile ───────────────────────────────────────
 
 export const createEmployerProfileSchema = z.object({

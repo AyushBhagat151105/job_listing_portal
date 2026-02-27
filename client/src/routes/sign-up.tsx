@@ -45,6 +45,7 @@ function SignUpPage() {
         onSubmit: async ({ value }) => {
             setServerError('')
             try {
+                document.cookie = `signUpRole=${value.role}; path=/; max-age=300; SameSite=Lax`;
                 const result = await authClient.signUp.email({
                     name: value.name,
                     email: value.email,
@@ -261,6 +262,7 @@ function SignUpPage() {
                             type="button"
                             variant="outline"
                             onClick={async () => {
+                                localStorage.setItem('signUpRole', form.getFieldValue('role'));
                                 document.cookie = `signUpRole=${form.getFieldValue('role')}; path=/; max-age=300; SameSite=Lax`;
                                 await authClient.signIn.social({ provider: 'google', callbackURL: window.location.origin })
                             }}
