@@ -25,9 +25,8 @@ app.use(
     })
 );
 
-app.use("/api/auth", authLimiter, toNodeHandler(auth));
+app.use("/api/auth", toNodeHandler(auth));
 
-// Apply global rate limiting to all standard API routes
 app.use("/api/v1", globalLimiter);
 
 app.use(express.json());
