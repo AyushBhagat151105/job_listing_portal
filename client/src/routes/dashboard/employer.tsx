@@ -145,29 +145,33 @@ function EmployerDashboard() {
             </div>
           ) : (
             <div className="space-y-3">
-              {stats.recentApplications.map((app: any) => (
-                <div
-                  key={app.id}
-                  className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">
-                      {app.applicant?.name || 'Applicant'}
-                    </p>
-                    <span className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
-                      <Building2 size={10} />
-                      Applied for {app.jobListing?.title || 'Job'} ·{' '}
-                      <Clock size={10} />
-                      {timeAgo(app.createdAt)}
-                    </span>
-                  </div>
-                  <Badge
-                    variant="outline"
-                    className={`text-[10px] font-semibold ${STATUS_COLORS[app.status] || 'border-border text-muted-foreground'}`}
+              {stats.recentApplications.map((app) => (
+                <Link to={`/jobs/$id/applicants`} params={{
+                  id: app.jobListingId
+                }}>
+                  <div
+                    key={app.id}
+                    className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
                   >
-                    {app.status}
-                  </Badge>
-                </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {app.applicant?.name || 'Applicant'}
+                      </p>
+                      <span className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                        <Building2 size={10} />
+                        Applied for {app.jobListing?.title || 'Job'} ·{' '}
+                        <Clock size={10} />
+                        {timeAgo(app.createdAt)}
+                      </span>
+                    </div>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] font-semibold ${STATUS_COLORS[app.status] || 'border-border text-muted-foreground'}`}
+                    >
+                      {app.status}
+                    </Badge>
+                  </div>
+                </Link>
               ))}
             </div>
           )}

@@ -14,6 +14,11 @@ import { Card, CardContent } from '#/components/ui/card'
 import { Badge } from '#/components/ui/badge'
 import { Skeleton } from '#/components/ui/skeleton'
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '#/components/ui/avatar'
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -117,6 +122,8 @@ function JobDetailsPage() {
     )
   }
 
+  const company = job.employerProfile || job.employer;
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <Link
@@ -139,7 +146,7 @@ function JobDetailsPage() {
                   {job.title}
                 </h1>
                 <p className="text-muted-foreground">
-                  {job.employer?.companyName || 'Company'}
+                  {company?.companyName || 'Company'}
                 </p>
               </div>
             </div>
@@ -236,48 +243,60 @@ function JobDetailsPage() {
         </div>
 
         {/* Sidebar — Company Info */}
-        <div>
+        <div className="space-y-6">
           <Card className="border-border bg-card sticky top-20">
             <CardContent className="p-6">
-              <h3 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">
+              <h3 className="text-sm font-semibold text-foreground mb-6 uppercase tracking-wider">
                 About the Company
               </h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <Building2 size={14} className="text-muted-foreground" />
-                  <span className="text-foreground">
-                    {job.employer?.companyName || 'Company'}
-                  </span>
+
+              <div className="flex items-center gap-4 mb-6">
+                <Avatar className="h-16 w-16 rounded-xl border border-border bg-muted/50">
+                  <AvatarImage src={company?.companyLogo || ''} alt={company?.companyName || 'Company'} className="object-cover" />
+                  <AvatarFallback className="rounded-xl text-lg font-semibold bg-teal-500/10 text-teal-500">
+                    {(company?.companyName || 'C').charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <h4 className="font-semibold text-lg text-foreground">
+                    {company?.companyName || 'Company'}
+                  </h4>
+                  {company?.industry && (
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {company.industry}
+                    </p>
+                  )}
                 </div>
-                {job.employer?.industry && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Briefcase size={14} className="text-muted-foreground" />
-                    <span className="text-muted-foreground">{job.employer.industry}</span>
+              </div>
+
+              <div className="space-y-4">
+                {company?.location && (
+                  <div className="flex items-start gap-3 text-sm">
+                    <MapPin size={16} className="text-muted-foreground shrink-0 mt-0.5" />
+                    <span className="text-foreground leading-tight">{company.location}</span>
                   </div>
                 )}
-                {job.employer?.location && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <MapPin size={14} className="text-muted-foreground" />
-                    <span className="text-muted-foreground">{job.employer.location}</span>
-                  </div>
-                )}
-                {job.employer?.website && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Globe size={14} className="text-muted-foreground" />
+
+                {company?.website && (
+                  <div className="flex items-center gap-3 text-sm">
+                    <Globe size={16} className="text-muted-foreground shrink-0" />
                     <a
-                      href={job.employer.website}
+                      href={company.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-teal-400 hover:text-teal-300 truncate"
+                      className="text-teal-400 hover:text-teal-300 truncate font-medium transition-colors"
                     >
-                      {job.employer.website.replace(/^https?:\/\//, '')}
+                      {company.website.replace(/^https?:\/\//, '')}
                     </a>
                   </div>
                 )}
-                {job.employer?.description && (
-                  <p className="text-xs text-muted-foreground pt-2 border-t border-border/60 leading-relaxed">
-                    {job.employer.description}
-                  </p>
+
+                {company?.description && (
+                  <div className="pt-4 border-t border-border/60">
+                    <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                      {company.description}
+                    </p>
+                  </div>
                 )}
               </div>
             </CardContent>
@@ -292,7 +311,7 @@ function JobDetailsPage() {
               Apply for {job.title}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              Submit your application to {job.employer?.companyName}
+              Submit your application to {company?.companyName || 'the company'}
             </DialogDescription>
           </DialogHeader>
 

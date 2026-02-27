@@ -28,7 +28,7 @@ export function SeekerProfileForm() {
     const [newSkill, setNewSkill] = useState('')
 
     const { data: profile, isLoading } = useQuery({
-        queryKey: ['profile', 'seeker'],
+        queryKey: ['profile', 'job_seeker'],
         queryFn: async () => {
             try {
                 const res = await api.get<ApiResponse<JobSeekerProfile>>(
@@ -70,7 +70,7 @@ export function SeekerProfileForm() {
                 }
 
                 toast.success('Profile saved successfully!')
-                queryClient.invalidateQueries({ queryKey: ['profile', 'seeker'] })
+                queryClient.invalidateQueries({ queryKey: ['profile', 'job_seeker'] })
             } catch (err: any) {
                 toast.error(err.message || 'Failed to save profile')
             }
